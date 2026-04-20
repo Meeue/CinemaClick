@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Screens — Cinema Admin</title>
+<link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+<div class="app" id="app"></div>
+
+<!-- SCREEN MODAL -->
+<div class="modal-overlay" id="screenModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title" id="scModalTitle">Add Screen</div><button class="modal-close" onclick="CM('screenModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group full"><label class="form-label">Screen Name *</label><input class="form-input" id="fScName" placeholder="e.g. Screen 4"/></div>
+        <div class="form-group"><label class="form-label">Cinema *</label><select class="form-select" id="fScCin"><option value="">Select cinema</option></select></div>
+        <div class="form-group"><label class="form-label">Total Seats *</label><input class="form-input" id="fScSeats" type="number" min="1" placeholder="120"/></div>
+        <div class="form-group"><label class="form-label">Screen ID (auto)</label><input class="form-input" id="fScId" disabled style="opacity:.4"/></div>
+      </div>
+      <div class="form-err" id="scErr"></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="CM('screenModal')">Cancel</button><button class="btn btn-primary" onclick="saveScreen()">Save Screen</button></div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="layout.js"></script>
+<script>
+injectLayout({page:'screens', title:'Screens', sub:'Screen configuration', actionLabel:'+ Add Screen'});
+
+document.getElementById('pageContent').innerHTML = `
+<div class="toolbar">
+  <div class="search-box"><span class="search-icon">🔍</span><input type="text" id="scSearch" placeholder="Search screen name…" oninput="renderScreens()"></div>
+  <select class="filter-select" id="scCinema" onchange="renderScreens()">
+    <option value="">All Cinemas</option>
+    <option value="CIN-001">SM Seaside Cebu Cinema</option>
+    <option value="CIN-002">Ayala Center Cebu Cinema</option>
+    <option value="CIN-003">Robinsons Galleria Cebu</option>
+  </select>
+</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Screen ID</th><th>Screen Name</th><th>Cinema</th><th>Total Seats</th><th style="text-align:right">Actions</th></tr></thead>
+    <tbody id="scBody"></tbody>
+  </table>
+  <div class="table-footer"><div class="table-count" id="scCount"></div><div class="pagination" id="scPag"></div></div>
+</div>
+`;
+
+document.getElementById('topbarAction').onclick = function(){ openScreenModal('add'); };
+
+var ET = {entity:null, id:null};
+var scPg = {v:1};
+
+function renderScreens(){
+  var q  = document.getElementById('scSearch').value.toLowerCase();
+  var cf = document.getElementById('scCinema').value;
+  var data = screens.filter(function(s){
+    return (!q || s.screen_name.toLowerCase().includes(q)) && (!cf || s.cinema_id===cf);
+  });
+  makeTable(data, 5, function(s){
+    return '<td class="td-mono">'+s.screen_id+'</td>'
+      +'<td class="td-bold">'+s.screen_name+'</td>'
+      +'<td>'+CiN(s.cinema_id)+'</td>'
+      +'<td>'+s.total_seats+'</td>'
+      +'<td style="text-align:right">'+ABtns('vScreen(\''+s.screen_id+'\')','openScreenModal(\'edit\',\''+s.screen_id+'\')','dScreen(\''+s.screen_id+'\')')+'</td>';
+  }, 'scBody','scCount','scPag',8,scPg);
+  document.getElementById('scPag').querySelectorAll('.page-btn').forEach(function(b){ b.addEventListener('repage', renderScreens); });
+}
+
+function vScreen(id){
+  var s  = screens.find(function(x){return x.screen_id===id;});
+  var av = seats.filter(function(x){return x.screen_id===id && x.status==='Available';}).length;
+  var tk = seats.filter(function(x){return x.screen_id===id && x.status==='Taken';}).length;
+  showView(s.screen_name,
+    vf('Screen ID',s.screen_id)+vf('Screen Name',s.screen_name)+vf('Cinema',CiN(s.cinema_id),true)+
+    vf('Total Seats',s.total_seats)+vf('Available',av)+vf('Taken',tk),
+    function(){ openScreenModal('edit', id); }
+  );
+}
+
+function dScreen(id){
+  var s = screens.find(function(x){return x.screen_id===id;});
+  showDelete('Delete Screen', s?.screen_name, function(){
+    screens = screens.filter(function(x){return x.screen_id!==id;});
+    seats   = seats.filter(function(x){return x.screen_id!==id;});
+    renderScreens();
+  });
+}
+
+function openScreenModal(mode, id){
+  ET = {entity:'screen', id: mode==='edit' ? id : null};
+  var s = mode==='edit' ? screens.find(function(x){return x.screen_id===id;}) : null;
+  document.getElementById('scModalTitle').textContent = mode==='edit' ? 'Edit Screen' : 'Add Screen';
+  document.getElementById('fScId').value    = s ? s.screen_id : 'SCR-'+String(scCtr+1).padStart(3,'0');
+  document.getElementById('fScName').value  = s ? s.screen_name : '';
+  document.getElementById('fScSeats').value = s ? s.total_seats : '';
+  var cs = document.getElementById('fScCin');
+  cs.innerHTML = '<option value="">Select cinema</option>';
+  cinemas.forEach(function(c){ var o=document.createElement('option'); o.value=c.cinema_id; o.textContent=c.cinema_name; cs.appendChild(o); });
+  if(s) cs.value = s.cinema_id;
+  document.getElementById('scErr').style.display='none';
+  OM('screenModal');
+}
+
+function saveScreen(){
+  var n  = document.getElementById('fScName').value.trim();
+  var ci = document.getElementById('fScCin').value;
+  var se = +document.getElementById('fScSeats').value;
+  var e  = document.getElementById('scErr');
+  if(!n||!ci||!se){e.textContent='Please fill in all required fields.';e.style.display='block';return;}
+  e.style.display='none';
+  if(ET.id){
+    Object.assign(screens.find(function(x){return x.screen_id===ET.id;}), {screen_name:n,cinema_id:ci,total_seats:se});
+  } else {
+    scCtr++;
+    screens.unshift({screen_id:'SCR-'+String(scCtr).padStart(3,'0'),screen_name:n,cinema_id:ci,total_seats:se});
+  }
+  CM('screenModal');
+  renderScreens();
+}
+
+document.querySelectorAll('.modal-overlay').forEach(function(o){
+  o.addEventListener('click',function(e){if(e.target===o)o.classList.remove('open');});
+});
+
+renderScreens();
+</script>
+</body>
+</html>
