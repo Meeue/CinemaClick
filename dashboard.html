@@ -1,102 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Dashboard — Cinema Admin</title>
-<link rel="stylesheet" href="styles.css"/>
-</head>
-<body>
-<div class="app" id="app"></div>
-<script src="data.js"></script>
-<script src="layout.js"></script>
-<script>
-injectLayout({page:'dashboard', title:'Dashboard', sub:'Monday, Apr 20, 2026'});
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+    <title>Dashboard — Cinema Admin</title>
+    <link rel="stylesheet" href="styles.css"/>
+  </head>
+  <body>
+    <div class="app" id="app"></div>
+    <script src="data.js"></script>
+    <script src="layout.js"></script>
+    <script>
+      injectLayout({page:'dashboard', title:'Dashboard', sub:'Monday, Apr 20, 2026'});
 
-document.getElementById('pageContent').innerHTML = `
-<div class="stats-row">
-  <div class="stat-card"><div class="stat-label">Today's Bookings</div><div class="stat-value">24</div><div class="stat-change up">↑ 12% vs yesterday</div></div>
-  <div class="stat-card"><div class="stat-label">Revenue Today</div><div class="stat-value">₱7,200</div><div class="stat-change up">↑ 8% vs yesterday</div></div>
-  <div class="stat-card"><div class="stat-label">Seat Occupancy</div><div class="stat-value">68%</div><div class="stat-change down">↓ 3% vs last week</div></div>
-  <div class="stat-card"><div class="stat-label">Active Showtimes</div><div class="stat-value">5</div><div class="stat-change up">across 3 screens</div></div>
-</div>
-<div class="grid-2">
-  <div class="panel">
-    <div class="panel-header"><div class="panel-title">Now showing</div><a class="panel-action" href="movies.html">manage movies →</a></div>
-    <div class="panel-body">
-      <div class="movie-list">
-        <div class="movie-item"><div class="movie-thumb t1"></div><div class="movie-info"><div class="movie-title-db">Girl, Boy, Bakla, Tomboy</div><div class="movie-meta">Comedy · 148 min · PG-13</div></div><span class="movie-badge badge-playing">Playing</span></div>
-        <div class="movie-item"><div class="movie-thumb t2"></div><div class="movie-info"><div class="movie-title-db">Spongebob</div><div class="movie-meta">Animation · 122 min · G</div></div><span class="movie-badge badge-playing">Playing</span></div>
-        <div class="movie-item"><div class="movie-thumb t3"></div><div class="movie-info"><div class="movie-title-db">Kung Fu Panda 2</div><div class="movie-meta">Action · 105 min · PG</div></div><span class="movie-badge badge-soon">Apr 25</span></div>
-      </div>
-    </div>
-  </div>
-  <div class="panel">
-    <div class="panel-header"><div class="panel-title">Seat map — Screen 2</div><a class="panel-action" href="seats.html">all screens →</a></div>
-    <div class="panel-body">
-      <div class="seat-map-cont">
-        <div class="screen-lbl">— screen —</div>
-        <div class="seat-rows-db" id="dbSeatMap"></div>
-        <div class="seat-legend">
-          <div class="legend-item"><div class="legend-dot" style="background:rgba(255,255,255,.12)"></div>Available</div>
-          <div class="legend-item"><div class="legend-dot" style="background:rgba(255,255,255,.04)"></div>Taken</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#E24B4A"></div>Selected</div>
-          <div class="legend-item"><div class="legend-dot" style="background:rgba(239,159,39,.3)"></div>VIP</div>
+      document.getElementById('pageContent').innerHTML = `
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-label">Today's Bookings</div><div class="stat-value">24</div><div class="stat-change up">↑ 12% vs yesterday</div></div>
+          <div class="stat-card"><div class="stat-label">Revenue Today</div><div class="stat-value">₱7,200</div><div class="stat-change up">↑ 8% vs yesterday</div></div>
+          <div class="stat-card"><div class="stat-label">Seat Occupancy</div><div class="stat-value">68%</div><div class="stat-change down">↓ 3% vs last week</div></div>
+          <div class="stat-card"><div class="stat-label">Active Showtimes</div><div class="stat-value">5</div><div class="stat-change up">across 3 screens</div></div>
         </div>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="grid-2">
-  <div class="panel">
-    <div class="panel-header"><div class="panel-title">Today's showtimes</div><a class="panel-action" href="showtimes.html">full schedule →</a></div>
-    <div class="panel-body">
-      <div class="db-st-grid">
-        <div class="db-st-row"><div><div class="show-time">10:00 AM</div><div class="show-screen">Screen 1</div></div><div><div class="show-film">Spongebob</div></div><div class="seat-bar"><div class="seat-fill"><div class="seat-filled" style="width:88%"></div></div><span class="seat-pct">88%</span></div></div>
-        <div class="db-st-row"><div><div class="show-time">12:30 PM</div><div class="show-screen">Screen 2</div></div><div><div class="show-film">Girl, Boy, Bakla, Tomboy</div></div><div class="seat-bar"><div class="seat-fill"><div class="seat-filled" style="width:62%"></div></div><span class="seat-pct">62%</span></div></div>
-        <div class="db-st-row"><div><div class="show-time">3:00 PM</div><div class="show-screen">Screen 1</div></div><div><div class="show-film">Kung Fu Panda 2</div></div><div class="seat-bar"><div class="seat-fill"><div class="seat-filled" style="width:45%"></div></div><span class="seat-pct">45%</span></div></div>
-        <div class="db-st-row"><div><div class="show-time">6:15 PM</div><div class="show-screen">Screen 3</div></div><div><div class="show-film">Spongebob</div></div><div class="seat-bar"><div class="seat-fill"><div class="seat-filled" style="width:79%"></div></div><span class="seat-pct">79%</span></div></div>
-        <div class="db-st-row"><div><div class="show-time">9:00 PM</div><div class="show-screen">Screen 4</div></div><div><div class="show-film">Kung Fu Panda 2</div></div><div class="seat-bar"><div class="seat-fill"><div class="seat-filled" style="width:31%"></div></div><span class="seat-pct">31%</span></div></div>
-      </div>
-    </div>
-  </div>
-  <div class="panel">
-    <div class="panel-header"><div class="panel-title">Recent bookings</div><a class="panel-action" href="bookings.html">view all →</a></div>
-    <div class="panel-body">
-      <div class="db-bk-list">
-        <div class="db-bk-item"><div><div class="td-mono">#BK-00482</div><div style="font-size:12px;font-weight:500;color:#fff">Maria Santos</div><div style="font-size:11px;color:rgba(255,255,255,.4)">Spongebob · 2 seats</div></div><div style="text-align:right"><div style="font-size:13px;font-weight:500">₱500</div><span class="pill p-green">Confirmed</span></div></div>
-        <div class="db-bk-item"><div><div class="td-mono">#BK-00481</div><div style="font-size:12px;font-weight:500;color:#fff">Juan dela Cruz</div><div style="font-size:11px;color:rgba(255,255,255,.4)">Girl, Boy, Bakla, Tomboy · 4 seats</div></div><div style="text-align:right"><div style="font-size:13px;font-weight:500">₱1,200</div><span class="pill p-green">Confirmed</span></div></div>
-        <div class="db-bk-item"><div><div class="td-mono">#BK-00480</div><div style="font-size:12px;font-weight:500;color:#fff">Ana Reyes</div><div style="font-size:11px;color:rgba(255,255,255,.4)">Spongebob · 1 seat</div></div><div style="text-align:right"><div style="font-size:13px;font-weight:500">₱300</div><span class="pill p-yellow">Pending</span></div></div>
-        <div class="db-bk-item"><div><div class="td-mono">#BK-00479</div><div style="font-size:12px;font-weight:500;color:#fff">Pedro Lim</div><div style="font-size:11px;color:rgba(255,255,255,.4)">Kung Fu Panda 2 · 2 seats</div></div><div style="text-align:right"><div style="font-size:13px;font-weight:500">₱600</div><span class="pill p-red">Cancelled</span></div></div>
-      </div>
-    </div>
-  </div>
-</div>
-`;
+        <div class="grid-2">
+          <div class="panel">
+            <div class="panel-header"><div class="panel-title">Now showing</div><a class="panel-action" href="movies.html">manage movies →</a></div>
+            <div class="panel-body">
+              <div class="movie-list">
+                <div class="movie-item"><div class="movie-thumb t1"></div><div class="movie-info"><div class="movie-title-db">Girl, Boy, Bakla, Tomboy</div><div class="movie-meta">Comedy · 148 min · PG-13</div></div><span class="movie-badge badge-playing">Playing</span></div>
+                <div class="movie-item"><div class="movie-thumb t2"></div><div class="movie-info"><div class="movie-title-db">Spongebob</div><div class="movie-meta">Animation · 122 min · G</div></div><span class="movie-badge badge-playing">Playing</span></div>
+                <div class="movie-item"><div class="movie-thumb t3"></div><div class="movie-info"><div class="movie-title-db">Kung Fu Panda 2</div><div class="movie-meta">Action · 105 min · PG</div></div><span class="movie-badge badge-soon">Apr 25</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-header"><div class="panel-title">Seat map — Screen 2</div><a class="panel-action" href="seats.html">all screens →</a></div>
+            <div class="panel-body">
+              <div class="seat-map-cont">
+                <div class="screen-lbl">— screen —</div>
+                <div class="seat-rows-db" id="dbSeatMap"></div>
+                <div class="seat-legend">
+                  <div class="legend-item"><div class="legend-dot" style="background:rgba(255,255,255,.12)"></div>Available</div>
+                  <div class="legend-item"><div class="legend-dot" style="background:rgba(255,255,255,.04)"></div>Taken</div>
+                  <div class="legend-item"><div class="legend-dot" style="background:#E24B4A"></div>Selected</div>
+                  <div class="legend-item"><div class="legend-dot" style="background:rgba(239,159,39,.3)"></div>VIP</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="panel">
+            <div class="panel-header"><div class="panel-title">Today's showtimes</div><a class="panel-action" href="showtimes.html">full schedule →</a></div>
+            <div class="panel-body">
+              <div class="db-st-grid">
+                <div class="db-st-row"><div><div class="show-time">10:00 AM</div><div class="show-screen">Screen 1</div></div><div><div class="show-film">Spongebob</div></div><div class="seat-bar"><div class="seat-fill"><div class="seat-filled" style="width:88%"></div></div><span class="seat-pct">88%</span></div></div>
+                <div class="db-st-row"><div><div class="show-time">12:30 PM</div><div class="show-screen">Screen 2</div></div><div><div class="show-film">Girl, Boy, Bakla, Tomboy</div></div><div class="seat-bar"><div class="seat-fill"><div class="seat-filled" style="width:62%"></div></div><span class="seat-pct">62%</span></div></div>
+                <div class="db-st-row"><div><div class="show-time">3:00 PM</div><div class="show-screen">Screen 1</div></div><div><div class="show-film">Kung Fu Panda 2</div></div><div class="seat-bar"><div class="seat-fill"><div class="seat-filled" style="width:45%"></div></div><span class="seat-pct">45%</span></div></div>
+                <div class="db-st-row"><div><div class="show-time">6:15 PM</div><div class="show-screen">Screen 3</div></div><div><div class="show-film">Spongebob</div></div><div class="seat-bar"><div class="seat-fill"><div class="seat-filled" style="width:79%"></div></div><span class="seat-pct">79%</span></div></div>
+                <div class="db-st-row"><div><div class="show-time">9:00 PM</div><div class="show-screen">Screen 4</div></div><div><div class="show-film">Kung Fu Panda 2</div></div><div class="seat-bar"><div class="seat-fill"><div class="seat-filled" style="width:31%"></div></div><span class="seat-pct">31%</span></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-header"><div class="panel-title">Recent bookings</div><a class="panel-action" href="bookings.html">view all →</a></div>
+            <div class="panel-body">
+              <div class="db-bk-list">
+                <div class="db-bk-item"><div><div class="td-mono">#BK-00482</div><div style="font-size:12px;font-weight:500;color:#fff">Maria Santos</div><div style="font-size:11px;color:rgba(255,255,255,.4)">Spongebob · 2 seats</div></div><div style="text-align:right"><div style="font-size:13px;font-weight:500">₱500</div><span class="pill p-green">Confirmed</span></div></div>
+                <div class="db-bk-item"><div><div class="td-mono">#BK-00481</div><div style="font-size:12px;font-weight:500;color:#fff">Juan dela Cruz</div><div style="font-size:11px;color:rgba(255,255,255,.4)">Girl, Boy, Bakla, Tomboy · 4 seats</div></div><div style="text-align:right"><div style="font-size:13px;font-weight:500">₱1,200</div><span class="pill p-green">Confirmed</span></div></div>
+                <div class="db-bk-item"><div><div class="td-mono">#BK-00480</div><div style="font-size:12px;font-weight:500;color:#fff">Ana Reyes</div><div style="font-size:11px;color:rgba(255,255,255,.4)">Spongebob · 1 seat</div></div><div style="text-align:right"><div style="font-size:13px;font-weight:500">₱300</div><span class="pill p-yellow">Pending</span></div></div>
+                <div class="db-bk-item"><div><div class="td-mono">#BK-00479</div><div style="font-size:12px;font-weight:500;color:#fff">Pedro Lim</div><div style="font-size:11px;color:rgba(255,255,255,.4)">Kung Fu Panda 2 · 2 seats</div></div><div style="text-align:right"><div style="font-size:13px;font-weight:500">₱600</div><span class="pill p-red">Cancelled</span></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
 
-// Dashboard seat map
-(function(){
-  var rows=['A','B','C','D','E','F','G'],cols=10;
-  var taken=new Set(['A3','A4','B5','B6','C2','C7','D4','D5','D6','E1','E8','F3','F9','G5']);
-  var vip=new Set(['A','B']),sel=new Set(['C4','C5']);
-  var map=document.getElementById('dbSeatMap');
-  rows.forEach(function(row){
-    var re=document.createElement('div');re.className='seat-row-db';
-    var lb=document.createElement('div');lb.className='row-lbl';lb.textContent=row;re.appendChild(lb);
-    for(var c=1;c<=cols;c++){
-      if(c===6){var g=document.createElement('div');g.className='seat-gap-db';re.appendChild(g);}
-      var k=row+c,s=document.createElement('div');s.className='db-seat';
-      s.classList.add(sel.has(k)?'selected':taken.has(k)?'taken':vip.has(row)?'vip':'available');
-      s.addEventListener('click',(function(s,row){return function(){
-        if(s.classList.contains('taken'))return;
-        if(s.classList.contains('selected')){s.classList.remove('selected');s.classList.add(vip.has(row)?'vip':'available');}
-        else{s.classList.remove('available','vip');s.classList.add('selected');}
-      };})(s,row));
-      re.appendChild(s);
-    }
-    map.appendChild(re);
-  });
-})();
-</script>
-</body>
+      // Dashboard seat map
+      (function(){
+        var rows=['A','B','C','D','E','F','G'],cols=10;
+        var taken=new Set(['A3','A4','B5','B6','C2','C7','D4','D5','D6','E1','E8','F3','F9','G5']);
+        var vip=new Set(['A','B']),sel=new Set(['C4','C5']);
+        var map=document.getElementById('dbSeatMap');
+        rows.forEach(function(row){
+          var re=document.createElement('div');re.className='seat-row-db';
+          var lb=document.createElement('div');lb.className='row-lbl';lb.textContent=row;re.appendChild(lb);
+          for(var c=1;c<=cols;c++){
+            if(c===6){var g=document.createElement('div');g.className='seat-gap-db';re.appendChild(g);}
+            var k=row+c,s=document.createElement('div');s.className='db-seat';
+            s.classList.add(sel.has(k)?'selected':taken.has(k)?'taken':vip.has(row)?'vip':'available');
+            s.addEventListener('click',(function(s,row){return function(){
+              if(s.classList.contains('taken'))return;
+              if(s.classList.contains('selected')){s.classList.remove('selected');s.classList.add(vip.has(row)?'vip':'available');}
+              else{s.classList.remove('available','vip');s.classList.add('selected');}
+            };})(s,row));
+            re.appendChild(s);
+          }
+          map.appendChild(re);
+        });
+      })();
+    </script>
+  </body>
 </html>

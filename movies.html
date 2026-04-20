@@ -1,228 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Movies — Cinema Admin</title>
-<link rel="stylesheet" href="styles.css"/>
-</head>
-<body>
-<div class="app" id="app"></div>
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+    <title>Movies — Cinema Admin</title>
+    <link rel="stylesheet" href="styles.css"/>
+  </head>
+  <body>
+    <div class="app" id="app"></div>
 
-<!-- MOVIE MODAL -->
-<div class="modal-overlay" id="movieModal">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="mvModalTitle">Add Movie</div>
-      <button class="modal-close" onclick="CM('movieModal')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-grid">
-        <div class="form-group full">
-          <label class="form-label">Movie Poster URL</label>
-          <input class="form-input" id="fMvPoster" placeholder="https://… or leave blank for placeholder"/>
-          <div style="margin-top:8px;display:flex;align-items:center;gap:10px;">
-            <label class="form-label" style="margin:0">Or upload:</label>
-            <input type="file" id="fMvPosterFile" accept="image/*" style="font-size:12px;color:rgba(255,255,255,.5);"/>
-          </div>
+    <!-- MOVIE MODAL -->
+    <div class="modal-overlay" id="movieModal">
+      <div class="modal">
+        <div class="modal-header">
+          <div class="modal-title" id="mvModalTitle">Add Movie</div>
+          <button class="modal-close" onclick="CM('movieModal')">✕</button>
         </div>
-        <div class="form-group"><label class="form-label">Title *</label><input class="form-input" id="fMvTitle" placeholder="e.g. Inception"/></div>
-        <div class="form-group"><label class="form-label">Genre *</label>
-          <select class="form-select" id="fMvGenre">
-            <option value="">Select</option><option>Action</option><option>Adventure</option><option>Animation</option>
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group full">
+              <label class="form-label">Movie Poster URL</label>
+              <input class="form-input" id="fMvPoster" placeholder="https://… or leave blank for placeholder"/>
+              <div style="margin-top:8px;display:flex;align-items:center;gap:10px;">
+                <label class="form-label" style="margin:0">Or upload:</label>
+                <input type="file" id="fMvPosterFile" accept="image/*" style="font-size:12px;color:rgba(255,255,255,.5);"/>
+              </div>
+            </div>
+            <div class="form-group"><label class="form-label">Title *</label><input class="form-input" id="fMvTitle" placeholder="e.g. Inception"/></div>
+            <div class="form-group"><label class="form-label">Genre *</label>
+              <select class="form-select" id="fMvGenre">
+                <option value="">Select</option><option>Action</option><option>Adventure</option><option>Animation</option>
+                <option>Comedy</option><option>Drama</option><option>Horror</option><option>Romance</option><option>Sci-Fi</option><option>Thriller</option>
+              </select>
+            </div>
+            <div class="form-group"><label class="form-label">Duration (min) *</label><input class="form-input" id="fMvDur" type="number" min="1" placeholder="120"/></div>
+            <div class="form-group"><label class="form-label">Rating *</label>
+              <select class="form-select" id="fMvRating">
+                <option value="">Select</option><option>G</option><option>PG</option><option>PG-13</option><option>R</option><option>R-18</option>
+              </select>
+            </div>
+            <div class="form-group"><label class="form-label">Release Date *</label><input class="form-input" id="fMvDate" type="date"/></div>
+            <div class="form-group"><label class="form-label">Movie ID (auto)</label><input class="form-input" id="fMvId" disabled style="opacity:.4"/></div>
+            <div class="form-group full"><label class="form-label">Description</label><textarea class="form-textarea" id="fMvDesc" placeholder="Brief synopsis…"></textarea></div>
+          </div>
+          <div class="form-err" id="mvErr"></div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-ghost" onclick="CM('movieModal')">Cancel</button>
+          <button class="btn btn-primary" onclick="saveMovie()">Save Movie</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="layout.js"></script>
+    <script>
+      injectLayout({page:'movies', title:'Movies', sub:'Manage movie catalog', actionLabel:'+ Add Movie'});
+
+      document.getElementById('pageContent').innerHTML = `
+        <div class="toolbar">
+          <div class="search-box"><span class="search-icon">🔍</span><input type="text" id="mvSearch" placeholder="Search title, genre…" oninput="renderMovies()"></div>
+          <select class="filter-select" id="mvGenre" onchange="renderMovies()">
+            <option value="">All Genres</option><option>Action</option><option>Adventure</option><option>Animation</option>
             <option>Comedy</option><option>Drama</option><option>Horror</option><option>Romance</option><option>Sci-Fi</option><option>Thriller</option>
           </select>
-        </div>
-        <div class="form-group"><label class="form-label">Duration (min) *</label><input class="form-input" id="fMvDur" type="number" min="1" placeholder="120"/></div>
-        <div class="form-group"><label class="form-label">Rating *</label>
-          <select class="form-select" id="fMvRating">
-            <option value="">Select</option><option>G</option><option>PG</option><option>PG-13</option><option>R</option><option>R-18</option>
+          <select class="filter-select" id="mvRating" onchange="renderMovies()">
+            <option value="">All Ratings</option><option>G</option><option>PG</option><option>PG-13</option><option>R</option><option>R-18</option>
           </select>
+          <div style="font-size:12px;color:rgba(255,255,255,.3)" id="mvCount"></div>
         </div>
-        <div class="form-group"><label class="form-label">Release Date *</label><input class="form-input" id="fMvDate" type="date"/></div>
-        <div class="form-group"><label class="form-label">Movie ID (auto)</label><input class="form-input" id="fMvId" disabled style="opacity:.4"/></div>
-        <div class="form-group full"><label class="form-label">Description</label><textarea class="form-textarea" id="fMvDesc" placeholder="Brief synopsis…"></textarea></div>
-      </div>
-      <div class="form-err" id="mvErr"></div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="CM('movieModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveMovie()">Save Movie</button>
-    </div>
-  </div>
-</div>
+        <div class="movies-grid" id="mvGrid"></div>
+      `;
 
-<script src="data.js"></script>
-<script src="layout.js"></script>
-<script>
-injectLayout({page:'movies', title:'Movies', sub:'Manage movie catalog', actionLabel:'+ Add Movie'});
+      document.getElementById('topbarAction').onclick = function(){ openMovieModal('add'); };
 
-document.getElementById('pageContent').innerHTML = `
-<div class="toolbar">
-  <div class="search-box"><span class="search-icon">🔍</span><input type="text" id="mvSearch" placeholder="Search title, genre…" oninput="renderMovies()"></div>
-  <select class="filter-select" id="mvGenre" onchange="renderMovies()">
-    <option value="">All Genres</option><option>Action</option><option>Adventure</option><option>Animation</option>
-    <option>Comedy</option><option>Drama</option><option>Horror</option><option>Romance</option><option>Sci-Fi</option><option>Thriller</option>
-  </select>
-  <select class="filter-select" id="mvRating" onchange="renderMovies()">
-    <option value="">All Ratings</option><option>G</option><option>PG</option><option>PG-13</option><option>R</option><option>R-18</option>
-  </select>
-  <div style="font-size:12px;color:rgba(255,255,255,.3)" id="mvCount"></div>
-</div>
-<div class="movies-grid" id="mvGrid"></div>
-`;
+      var ET = {entity:null, id:null};
 
-document.getElementById('topbarAction').onclick = function(){ openMovieModal('add'); };
+      function renderMovies(){
+        var q = document.getElementById('mvSearch').value.toLowerCase();
+        var g = document.getElementById('mvGenre').value;
+        var r = document.getElementById('mvRating').value;
+        var filtered = movies.filter(function(m){
+          return (!q || m.title.toLowerCase().includes(q) || m.genre.toLowerCase().includes(q))
+              && (!g || m.genre === g)
+              && (!r || m.rating === r);
+        });
+        document.getElementById('mvCount').textContent = filtered.length + ' movie' + (filtered.length!==1?'s':'');
+        var grid = document.getElementById('mvGrid');
+        if(!filtered.length){
+          grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🔍</div><div class="empty-text">No movies found</div></div>';
+          return;
+        }
+        grid.innerHTML = filtered.map(function(m){ return buildCard(m); }).join('');
+      }
 
-var ET = {entity:null, id:null};
+      function buildCard(m){
+        var posterHtml;
+        if(m.poster_url){
+          posterHtml = '<img src="'+m.poster_url+'" alt="'+m.title+'" onerror="this.parentElement.innerHTML=\'<div class=movie-poster-placeholder><div class=poster-icon>🎬</div><div class=poster-label>No Poster</div></div>\'">';
+        } else {
+          posterHtml = '<div class="movie-poster-placeholder"><div class="poster-icon">🎬</div><div class="poster-label">No Poster</div></div>';
+        }
+        return [
+          '<div class="movie-card" onclick="vMovie(\''+m.movie_id+'\')">',
+          '  <div class="movie-poster">',
+          '    '+posterHtml,
+          '    <div class="movie-poster-badge"><span class="rating-badge '+RC(m.rating)+'">'+m.rating+'</span></div>',
+          '    <div class="poster-upload-btn" onclick="event.stopPropagation();triggerPosterUpload(\''+m.movie_id+'\')">📷 Change Poster</div>',
+          '  </div>',
+          '  <div class="movie-card-body">',
+          '    <div class="movie-card-title">'+m.title+'</div>',
+          '    <div class="movie-card-meta"><span class="genre-tag">'+m.genre+'</span> &nbsp;'+m.duration_minutes+' min</div>',
+          '    <div class="movie-card-footer">',
+          '      <div style="font-size:10px;color:rgba(255,255,255,.3)">'+m.release_date+'</div>',
+          '      <div class="movie-card-actions">',
+          '        <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openMovieModal(\'edit\',\''+m.movie_id+'\')">Edit</button>',
+          '        <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();dMovie(\''+m.movie_id+'\')">Del</button>',
+          '      </div>',
+          '    </div>',
+          '  </div>',
+          '</div>',
+        ].join('');
+      }
 
-function renderMovies(){
-  var q = document.getElementById('mvSearch').value.toLowerCase();
-  var g = document.getElementById('mvGenre').value;
-  var r = document.getElementById('mvRating').value;
-  var filtered = movies.filter(function(m){
-    return (!q || m.title.toLowerCase().includes(q) || m.genre.toLowerCase().includes(q))
-        && (!g || m.genre === g)
-        && (!r || m.rating === r);
-  });
-  document.getElementById('mvCount').textContent = filtered.length + ' movie' + (filtered.length!==1?'s':'');
-  var grid = document.getElementById('mvGrid');
-  if(!filtered.length){
-    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🔍</div><div class="empty-text">No movies found</div></div>';
-    return;
-  }
-  grid.innerHTML = filtered.map(function(m){ return buildCard(m); }).join('');
-}
+      function triggerPosterUpload(movieId){
+        var input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = function(){
+          var file = input.files[0];
+          if(!file) return;
+          var reader = new FileReader();
+          reader.onload = function(e){
+            var m = movies.find(function(x){return x.movie_id===movieId;});
+            if(m){ m.poster_url = e.target.result; renderMovies(); }
+          };
+          reader.readAsDataURL(file);
+        };
+        input.click();
+      }
 
-function buildCard(m){
-  var posterHtml;
-  if(m.poster_url){
-    posterHtml = '<img src="'+m.poster_url+'" alt="'+m.title+'" onerror="this.parentElement.innerHTML=\'<div class=movie-poster-placeholder><div class=poster-icon>🎬</div><div class=poster-label>No Poster</div></div>\'">';
-  } else {
-    posterHtml = '<div class="movie-poster-placeholder"><div class="poster-icon">🎬</div><div class="poster-label">No Poster</div></div>';
-  }
-  return [
-    '<div class="movie-card" onclick="vMovie(\''+m.movie_id+'\')">',
-    '  <div class="movie-poster">',
-    '    '+posterHtml,
-    '    <div class="movie-poster-badge"><span class="rating-badge '+RC(m.rating)+'">'+m.rating+'</span></div>',
-    '    <div class="poster-upload-btn" onclick="event.stopPropagation();triggerPosterUpload(\''+m.movie_id+'\')">📷 Change Poster</div>',
-    '  </div>',
-    '  <div class="movie-card-body">',
-    '    <div class="movie-card-title">'+m.title+'</div>',
-    '    <div class="movie-card-meta"><span class="genre-tag">'+m.genre+'</span> &nbsp;'+m.duration_minutes+' min</div>',
-    '    <div class="movie-card-footer">',
-    '      <div style="font-size:10px;color:rgba(255,255,255,.3)">'+m.release_date+'</div>',
-    '      <div class="movie-card-actions">',
-    '        <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openMovieModal(\'edit\',\''+m.movie_id+'\')">Edit</button>',
-    '        <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();dMovie(\''+m.movie_id+'\')">Del</button>',
-    '      </div>',
-    '    </div>',
-    '  </div>',
-    '</div>',
-  ].join('');
-}
+      function vMovie(id){
+        var m = movies.find(function(x){return x.movie_id===id;});
+        var posterPreview = m.poster_url
+          ? '<div class="vf full"><div class="vf-label">Poster</div><img src="'+m.poster_url+'" style="width:100px;border-radius:6px;margin-top:4px"></div>'
+          : '';
+        showView(m.title,
+          vf('Movie ID', m.movie_id) +
+          vf('Genre', m.genre) +
+          vf('Duration', m.duration_minutes+' min') +
+          '<div class="vf"><div class="vf-label">Rating</div><div class="vf-value"><span class="rating-badge '+RC(m.rating)+'">'+m.rating+'</span></div></div>' +
+          vf('Release Date', m.release_date) +
+          vf('Description', m.description, true) +
+          posterPreview,
+          function(){ openMovieModal('edit', id); }
+        );
+      }
 
-function triggerPosterUpload(movieId){
-  var input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'image/*';
-  input.onchange = function(){
-    var file = input.files[0];
-    if(!file) return;
-    var reader = new FileReader();
-    reader.onload = function(e){
-      var m = movies.find(function(x){return x.movie_id===movieId;});
-      if(m){ m.poster_url = e.target.result; renderMovies(); }
-    };
-    reader.readAsDataURL(file);
-  };
-  input.click();
-}
+      function dMovie(id){
+        var m = movies.find(function(x){return x.movie_id===id;});
+        showDelete('Delete Movie', m.title, function(){
+          movies = movies.filter(function(x){return x.movie_id!==id;});
+          renderMovies();
+        });
+      }
 
-function vMovie(id){
-  var m = movies.find(function(x){return x.movie_id===id;});
-  var posterPreview = m.poster_url
-    ? '<div class="vf full"><div class="vf-label">Poster</div><img src="'+m.poster_url+'" style="width:100px;border-radius:6px;margin-top:4px"></div>'
-    : '';
-  showView(m.title,
-    vf('Movie ID', m.movie_id) +
-    vf('Genre', m.genre) +
-    vf('Duration', m.duration_minutes+' min') +
-    '<div class="vf"><div class="vf-label">Rating</div><div class="vf-value"><span class="rating-badge '+RC(m.rating)+'">'+m.rating+'</span></div></div>' +
-    vf('Release Date', m.release_date) +
-    vf('Description', m.description, true) +
-    posterPreview,
-    function(){ openMovieModal('edit', id); }
-  );
-}
+      function openMovieModal(mode, id){
+        ET = {entity:'movie', id: mode==='edit' ? id : null};
+        var m = mode==='edit' ? movies.find(function(x){return x.movie_id===id;}) : null;
+        document.getElementById('mvModalTitle').textContent = mode==='edit' ? 'Edit Movie' : 'Add Movie';
+        document.getElementById('fMvId').value    = m ? m.movie_id : 'MOV-'+String(mvCtr+1).padStart(3,'0');
+        document.getElementById('fMvTitle').value = m ? m.title : '';
+        document.getElementById('fMvGenre').value = m ? m.genre : '';
+        document.getElementById('fMvDur').value   = m ? m.duration_minutes : '';
+        document.getElementById('fMvRating').value= m ? m.rating : '';
+        document.getElementById('fMvDate').value  = m ? m.release_date : '';
+        document.getElementById('fMvDesc').value  = m ? m.description : '';
+        document.getElementById('fMvPoster').value= m ? (m.poster_url||'') : '';
+        document.getElementById('fMvPosterFile').value = '';
+        document.getElementById('mvErr').style.display='none';
+        OM('movieModal');
+      }
 
-function dMovie(id){
-  var m = movies.find(function(x){return x.movie_id===id;});
-  showDelete('Delete Movie', m.title, function(){
-    movies = movies.filter(function(x){return x.movie_id!==id;});
-    renderMovies();
-  });
-}
+      function saveMovie(){
+        var t  = document.getElementById('fMvTitle').value.trim();
+        var g  = document.getElementById('fMvGenre').value;
+        var d  = +document.getElementById('fMvDur').value;
+        var r  = document.getElementById('fMvRating').value;
+        var dt = document.getElementById('fMvDate').value;
+        var de = document.getElementById('fMvDesc').value.trim();
+        var pu = document.getElementById('fMvPoster').value.trim();
+        var e  = document.getElementById('mvErr');
+        if(!t||!g||!d||!r||!dt){e.textContent='Please fill in all required fields.';e.style.display='block';return;}
+        e.style.display='none';
 
-function openMovieModal(mode, id){
-  ET = {entity:'movie', id: mode==='edit' ? id : null};
-  var m = mode==='edit' ? movies.find(function(x){return x.movie_id===id;}) : null;
-  document.getElementById('mvModalTitle').textContent = mode==='edit' ? 'Edit Movie' : 'Add Movie';
-  document.getElementById('fMvId').value    = m ? m.movie_id : 'MOV-'+String(mvCtr+1).padStart(3,'0');
-  document.getElementById('fMvTitle').value = m ? m.title : '';
-  document.getElementById('fMvGenre').value = m ? m.genre : '';
-  document.getElementById('fMvDur').value   = m ? m.duration_minutes : '';
-  document.getElementById('fMvRating').value= m ? m.rating : '';
-  document.getElementById('fMvDate').value  = m ? m.release_date : '';
-  document.getElementById('fMvDesc').value  = m ? m.description : '';
-  document.getElementById('fMvPoster').value= m ? (m.poster_url||'') : '';
-  document.getElementById('fMvPosterFile').value = '';
-  document.getElementById('mvErr').style.display='none';
-  OM('movieModal');
-}
+        // Handle file upload if chosen
+        var fileInput = document.getElementById('fMvPosterFile');
+        function finalize(posterUrl){
+          if(ET.id){
+            Object.assign(movies.find(function(x){return x.movie_id===ET.id;}),
+              {title:t,genre:g,duration_minutes:d,rating:r,release_date:dt,description:de,poster_url:posterUrl});
+          } else {
+            mvCtr++;
+            movies.unshift({movie_id:'MOV-'+String(mvCtr).padStart(3,'0'),title:t,genre:g,duration_minutes:d,rating:r,release_date:dt,description:de,poster_url:posterUrl});
+          }
+          CM('movieModal');
+          renderMovies();
+        }
 
-function saveMovie(){
-  var t  = document.getElementById('fMvTitle').value.trim();
-  var g  = document.getElementById('fMvGenre').value;
-  var d  = +document.getElementById('fMvDur').value;
-  var r  = document.getElementById('fMvRating').value;
-  var dt = document.getElementById('fMvDate').value;
-  var de = document.getElementById('fMvDesc').value.trim();
-  var pu = document.getElementById('fMvPoster').value.trim();
-  var e  = document.getElementById('mvErr');
-  if(!t||!g||!d||!r||!dt){e.textContent='Please fill in all required fields.';e.style.display='block';return;}
-  e.style.display='none';
+        if(fileInput.files && fileInput.files[0]){
+          var reader = new FileReader();
+          reader.onload = function(ev){ finalize(ev.target.result); };
+          reader.readAsDataURL(fileInput.files[0]);
+        } else {
+          finalize(pu);
+        }
+      }
 
-  // Handle file upload if chosen
-  var fileInput = document.getElementById('fMvPosterFile');
-  function finalize(posterUrl){
-    if(ET.id){
-      Object.assign(movies.find(function(x){return x.movie_id===ET.id;}),
-        {title:t,genre:g,duration_minutes:d,rating:r,release_date:dt,description:de,poster_url:posterUrl});
-    } else {
-      mvCtr++;
-      movies.unshift({movie_id:'MOV-'+String(mvCtr).padStart(3,'0'),title:t,genre:g,duration_minutes:d,rating:r,release_date:dt,description:de,poster_url:posterUrl});
-    }
-    CM('movieModal');
-    renderMovies();
-  }
+      // Close modals on backdrop click
+      document.querySelectorAll('.modal-overlay').forEach(function(o){
+        o.addEventListener('click',function(e){if(e.target===o)o.classList.remove('open');});
+      });
 
-  if(fileInput.files && fileInput.files[0]){
-    var reader = new FileReader();
-    reader.onload = function(ev){ finalize(ev.target.result); };
-    reader.readAsDataURL(fileInput.files[0]);
-  } else {
-    finalize(pu);
-  }
-}
-
-// Close modals on backdrop click
-document.querySelectorAll('.modal-overlay').forEach(function(o){
-  o.addEventListener('click',function(e){if(e.target===o)o.classList.remove('open');});
-});
-
-renderMovies();
-</script>
-</body>
+      renderMovies();
+    </script>
+  </body>
 </html>
