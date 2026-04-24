@@ -11,24 +11,23 @@
   <body>
     <div class="app" id="app"></div>
 
-    <!-- SEAT EDIT MODAL -->
-    <div class="modal-overlay" id="seatModal">
-      <div class="modal">
-        <div class="modal-header"><div class="modal-title">Edit Seat</div><button class="modal-close" onclick="CM('seatModal')">✕</button></div>
-        <div class="modal-body">
-          <div class="form-grid">
-            <div class="form-group"><label class="form-label">Seat ID</label><input class="form-input" id="fSeId" disabled style="opacity:.4"/></div>
-            <div class="form-group"><label class="form-label">Screen</label><input class="form-input" id="fSeScr" disabled style="opacity:.4"/></div>
-            <div class="form-group"><label class="form-label">Seat Number</label><input class="form-input" id="fSeNum" disabled style="opacity:.4"/></div>
-            </div>
-            <div class="form-group full"><label class="form-label">Status *</label>
-              <select class="form-select" id="fSeStat"><option>Available</option><option>Taken</option><option>Maintenance</option></select>
-            </div>
-          </div>
+   <!-- SEAT EDIT MODAL -->
+<div class="modal-overlay" id="seatModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Edit Seat</div><button class="modal-close" onclick="CM('seatModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">Seat ID</label><input class="form-input" id="fSeId" disabled style="opacity:.4"/></div>
+        <div class="form-group"><label class="form-label">Screen</label><input class="form-input" id="fSeScr" disabled style="opacity:.4"/></div>
+        <div class="form-group"><label class="form-label">Seat Number</label><input class="form-input" id="fSeNum" disabled style="opacity:.4"/></div>
+        <div class="form-group full"><label class="form-label">Status *</label>
+          <select class="form-select" id="fSeStat"><option>Available</option><option>Taken</option><option>Maintenance</option></select>
         </div>
-        <div class="modal-footer"><button class="btn btn-ghost" onclick="CM('seatModal')">Cancel</button><button class="btn btn-primary" onclick="saveSeat()">Save Seat</button></div>
       </div>
     </div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="CM('seatModal')">Cancel</button><button class="btn btn-primary" onclick="saveSeat()">Save Seat</button></div>
+  </div>
+</div>
 
     <script src="data.js"></script>
     <script src="layout.js"></script>
