@@ -18,8 +18,6 @@
             <div class="form-group"><label class="form-label">Seat ID</label><input class="form-input" id="fSeId" disabled style="opacity:.4"/></div>
             <div class="form-group"><label class="form-label">Screen</label><input class="form-input" id="fSeScr" disabled style="opacity:.4"/></div>
             <div class="form-group"><label class="form-label">Seat Number</label><input class="form-input" id="fSeNum" disabled style="opacity:.4"/></div>
-            <div class="form-group"><label class="form-label">Seat Type *</label>
-              <select class="form-select" id="fSeType"><option>Standard</option></select>
             </div>
             <div class="form-group full"><label class="form-label">Status *</label>
               <select class="form-select" id="fSeStat"><option>Available</option><option>Taken</option><option>Maintenance</option></select>
@@ -55,12 +53,9 @@
           </div>
         </div>
         <div class="toolbar" style="margin-bottom:16px">
-          <div class="search-box"><span class="search-icon">🔍</span><input type="text" id="seSearch" placeholder="Search seat number…" oninput="renderSeats()"></div>
+          <div class="search-box"><span class="search-icon">🔍</span><input id="seSearch" placeholder="Search seat number…" oninput="renderSeats()"></div>
           <select class="filter-select" id="seScreen" onchange="renderSeats();updateVisual()">
             <option value="">All Screens</option>
-          </select>
-          <select class="filter-select" id="seType" onchange="renderSeats()">
-            <option value="">All Types</option><option value="Standard">Standard</option>
           </select>
           <select class="filter-select" id="seStatus" onchange="renderSeats()">
             <option value="">All Status</option><option value="Available">Available</option><option value="Taken">Taken</option><option value="Maintenance">Maintenance</option>
@@ -68,7 +63,7 @@
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Seat ID</th><th>Screen</th><th>Seat Number</th><th>Type</th><th>Status</th><th style="text-align:center">Actions</th></tr></thead>
+            <thead><tr><th>Seat ID</th><th>Screen</th><th>Seat Number</th><th>Status</th><th style="text-align:center">Actions</th></tr></thead>
             <tbody id="seBody"></tbody>
           </table>
           <div class="table-footer"><div class="table-count" id="seCount"></div><div class="pagination" id="sePag"></div></div>
@@ -126,7 +121,7 @@
             if(i===5){var g=document.createElement('div');g.className='vis-gap';re.appendChild(g);}
             var sv=document.createElement('div'); sv.className='vs';
             sv.classList.add(s.status==='Taken'?'vt':'va');
-            sv.title=s.seat_number+' · '+s.seat_type+' · '+s.status + ' (click to edit)';
+            sv.title=s.seat_number+' · '+s.status + ' (click to edit)';
             sv.style.cursor = 'pointer';
             sv.onclick = function(){ eSeat(s.seat_id); };
             re.appendChild(sv);
@@ -138,24 +133,21 @@
       function renderSeats(){
         var q  = document.getElementById('seSearch').value.toLowerCase();
         var sf = document.getElementById('seScreen').value;
-        var tf = document.getElementById('seType').value;
         var st = document.getElementById('seStatus').value;
         var TY = {'Standard':'p-gray'};
         var ST = {'Available':'p-green','Taken':'p-red','Maintenance':'p-yellow'};
         var data = seats.filter(function(s){
           return (!q || s.seat_number.toLowerCase().includes(q) || s.seat_id.toLowerCase().includes(q))
               && (!sf || s.screen_id===sf)
-              && (!tf || s.seat_type===tf)
               && (!st || s.status===st);
         });
         makeTable(data, 6, function(s){
           return '<td class="td-mono">'+s.seat_id+'</td>'
             +'<td>'+ScrN(s.screen_id)+'</td>'
             +'<td class="td-bold">'+s.seat_number+'</td>'
-            +'<td><span class="pill '+(TY[s.seat_type]||'')+'">'+s.seat_type+'</span></td>'
             +'<td><span class="pill '+(ST[s.status]||'')+'">'+s.status+'</span></td>'
             +'<td style="text-align:center"><div class="actions" style="justify-content:center"><button class="btn btn-ghost btn-sm" onclick="vSeat(\''+s.seat_id+'\')">View</button><button class="btn btn-ghost btn-sm" onclick="eSeat(\''+s.seat_id+'\')">Edit</button></div></td>';
-        }, 'seBody','seCount','sePag',10,sePg);
+        }, 'seBody','seCount','sePag',9999,sePg);
         document.getElementById('sePag').querySelectorAll('.page-btn').forEach(function(b){ b.addEventListener('repage', renderSeats); });
       }
 
@@ -163,7 +155,7 @@
         var s  = seats.find(function(x){return x.seat_id===id;});
         var ST = {'Available':'p-green','Taken':'p-red','Maintenance':'p-yellow'};
         showView('Seat Details',
-          vf('Seat ID',s.seat_id)+vf('Screen',ScrN(s.screen_id))+vf('Seat Number',s.seat_number)+vf('Seat Type',s.seat_type)+
+          vf('Seat ID',s.seat_id)+vf('Screen',ScrN(s.screen_id))+vf('Seat Number',s.seat_number)+
           '<div class="vf"><div class="vf-label">Status</div><div class="vf-value"><span class="pill '+(ST[s.status]||'')+'">'+s.status+'</span></div></div>',
           function(){ eSeat(id); }
         );
@@ -176,16 +168,14 @@
         document.getElementById('fSeId').value   = s.seat_id;
         document.getElementById('fSeScr').value  = ScrN(s.screen_id);
         document.getElementById('fSeNum').value  = s.seat_number;
-        document.getElementById('fSeType').value = s.seat_type;
         document.getElementById('fSeStat').value = s.status;
         OM('seatModal');
       }
 
       function saveSeat(){
-        var ty = document.getElementById('fSeType').value;
         var st = document.getElementById('fSeStat').value;
         if(ET.id){
-          Object.assign(seats.find(function(x){return x.seat_id===ET.id;}), {seat_type:ty,status:st});
+          Object.assign(seats.find(function(x){return x.seat_id===ET.id;}), {status:st});
         }
         CM('seatModal');
         renderSeats();

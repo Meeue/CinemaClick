@@ -233,17 +233,5 @@ function makeTable(data, colCount, rowFn, bodyId, countId, pagId, perPage, pgObj
   if(count) count.textContent = total + ' record' + (total !== 1 ? 's' : '');
 
   var pag = document.getElementById(pagId);
-  if(!pag) return;
-  if(pages <= 1){ pag.innerHTML = ''; return; }
-  var btns = '';
-  for(var i = 1; i <= pages; i++){
-    btns += '<button class="page-btn'+(i===pgObj.v?' active':'')+'" data-pg="'+i+'">'+i+'</button>';
-  }
-  pag.innerHTML = btns;
-  pag.querySelectorAll('.page-btn').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      pgObj.v = +this.dataset.pg;
-      btn.dispatchEvent(new Event('repage', {bubbles:true}));
-    });
-  });
+  if(pag) pag.innerHTML = '';
 }
