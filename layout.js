@@ -1,28 +1,17 @@
 
 (function(){
-  var saved = localStorage.getItem('cinema-theme') || 'dark';
-  document.documentElement.setAttribute('data-theme', saved);
-  document.body.setAttribute('data-theme', saved);
-})();
-
-function injectLayout(opts){
-  opts = opts || {};
-  var page        = opts.page        || '';
-  var title       = opts.title       || '';
-  var sub         = opts.sub         || '';
-  var actionLabel = opts.actionLabel || null;
-
-  var navItems = [
-    {id:'dashboard', icon:'⬛', label:'Dashboard',  href:'dashboard.html',  section:'Main'},
-    {id:'movies',    icon:'🎬', label:'Movies',     href:'movies.html'},
-    {id:'showtimes', icon:'🕐', label:'Showtimes',  href:'showtimes.html'},
-    {id:'bookings',  icon:'📋', label:'Bookings',   href:'bookings.html'},
-    {id:'tickets',   icon:'🎟', label:'Tickets',    href:'tickets.html'},
-    {id:'customers', icon:'👤', label:'Customers',  href:'customers.html'},
-    {id:'cinemas',   icon:'🏛', label:'Cinemas',    href:'cinemas.html',    section:'Venue'},
-    {id:'screens',   icon:'📺', label:'Screens',    href:'screens.html'},
-    {id:'seats',     icon:'💺', label:'Seats',      href:'seats.html'},
-    {id:'payments',  icon:'💳', label:'Payments',   href:'payments.html',   section:'Finance'},
+  var PAGES = [
+    {key:'dashboard',   href:'dashboard.html',   icon:'▦',  label:'Dashboard',   section:'Main'},
+    {key:'movies',      href:'movies.html',      icon:'🎞', label:'Movies'},
+    {key:'showtimes',   href:'showtimes.html',   icon:'🗓', label:'Showtimes'},
+    {key:'bookings',    href:'bookings.html',    icon:'🎟', label:'Bookings'},
+    {key:'cinemas',     href:'cinemas.html',     icon:'🏛', label:'Cinemas',     section:'Venue'},
+    {key:'screens',     href:'screens.html',     icon:'📺', label:'Screens'},
+    {key:'seats',       href:'seats.html',       icon:'💺', label:'Seats'},
+    {key:'payments',    href:'payments.html',    icon:'💳', label:'Payments',    section:'Finance'},
+    {key:'customers',   href:'customers.html',   icon:'👤', label:'Customers',   section:'System'},
+    {key:'tickets',     href:'tickets.html',     icon:'🎫', label:'Tickets'},
+    {key:'audit_logs',  href:'audit_logs.html',  icon:'📋', label:'Audit Logs'},
   ];
 
   function buildSidebar(activeKey){
