@@ -32,10 +32,10 @@ body{font-family:'DM Sans',sans-serif;}
 }
 
 [data-theme="light"]{
-  --bg:          #FDF8F2;
-  --bg-sidebar:  #FFF5E6;
-  --bg-surface:  #FFFFFF;
-  --bg-surface2: #FFF0D8;
+  --bg:          #D8CFC4;
+  --bg-sidebar:  #CFC4B6;
+  --bg-surface:  #E4DDD4;
+  --bg-surface2: #D4C9BC;
   --accent:      #C8370A;
   --accent-hover:#a82b07;
   --accent-dim:  rgba(200,55,10,.1);
@@ -45,13 +45,13 @@ body{font-family:'DM Sans',sans-serif;}
   --text-muted:  #6B6678;
   --text-faint:  rgba(28,28,40,.25);
   --border:      rgba(28,28,40,.1);
-  --border-md:   rgba(28,28,40,.18);
+  --border-md:   rgba(28,28,40,.25);
   --success:     #2E7D32;
   --success-dim: rgba(46,125,50,.1);
   --warning:     #a06800;
   --warning-dim: rgba(232,160,32,.13);
   --danger:      #C8370A;
-  --danger-dim:  rgba(200,55,10,.1);
+  --danger-dim:  rgba(200,55,10,.2);
   --scrollbar-thumb: rgba(28,28,40,.15);
 }
 
