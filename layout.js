@@ -52,7 +52,7 @@ function injectLayout(opts){
         '<div class="logo-mark">'+
           '<div class="logo-icon">🎬</div>'+
           '<div>'+
-            '<div class="logo-text">CineAdmin</div>'+
+            '<div class="logo-text">CinemaClick</div>'+
             '<div class="logo-sub">Ticket Booking</div>'+
           '</div>'+
         '</div>'+
