@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
     <title>Seats — Cinema Admin</title>
     <link rel="stylesheet" href="styles.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
   </head>
   <body>
     <div class="app" id="app"></div>
@@ -53,7 +55,7 @@
           </div>
         </div>
         <div class="toolbar" style="margin-bottom:16px">
-          <div class="search-box"><span class="search-icon">🔍</span><input id="seSearch" placeholder="Search seat number…" oninput="renderSeats()"></div>
+          <div class="search-box"><span class="search-icon"><i class="fa-solid fa-magnifying-glass" style="color: #ff4520;"></i></span><input id="seSearch" placeholder="Search seat number…" oninput="renderSeats()"></div>
           <select class="filter-select" id="seScreen" onchange="renderSeats();updateVisual()">
             <option value="">All Screens</option>
           </select>

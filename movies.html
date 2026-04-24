@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
     <title>Movies — Cinema Admin</title>
     <link rel="stylesheet" href="styles.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
   </head>
   <body>
     <div class="app" id="app"></div>
@@ -59,7 +61,7 @@
 
       document.getElementById('pageContent').innerHTML = `
         <div class="toolbar">
-          <div class="search-box"><span class="search-icon">🔍</span><input type="text" id="mvSearch" placeholder="Search title, genre…" oninput="renderMovies()"></div>
+          <div class="search-box"><span class="search-icon"><i class="fa-solid fa-magnifying-glass" style="color: #ff4520;"></i></span><input type="text" id="mvSearch" placeholder="Search title, genre…" oninput="renderMovies()"></div>
           <select class="filter-select" id="mvGenre" onchange="renderMovies()">
             <option value="">All Genres</option><option>Action</option><option>Adventure</option><option>Animation</option>
             <option>Comedy</option><option>Drama</option><option>Horror</option><option>Romance</option><option>Sci-Fi</option><option>Thriller</option>
@@ -97,16 +99,16 @@
       function buildCard(m){
         var posterHtml;
         if(m.poster_url){
-          posterHtml = '<img src="'+m.poster_url+'" alt="'+m.title+'" onerror="this.parentElement.innerHTML=\'<div class=movie-poster-placeholder><div class=poster-icon>🎬</div><div class=poster-label>No Poster</div></div>\'">';
+          posterHtml = '<img src="'+m.poster_url+'" alt="'+m.title+'" onerror="this.parentElement.innerHTML=\'<div class=movie-poster-placeholder><div class=poster-icon><i class="fa-solid fa-arrow-up-from-bracket" style="color: #ff4520;"></i></div><div class=poster-label>No Poster</div></div>\'">';
         } else {
-          posterHtml = '<div class="movie-poster-placeholder"><div class="poster-icon">🎬</div><div class="poster-label">No Poster</div></div>';
+          posterHtml = '<div class="movie-poster-placeholder"><div class="poster-icon"><i class="fa-solid fa-file-import" style="color: #ff4520;"></i></div><div class="poster-label">No Poster</div></div>';
         }
         return [
           '<div class="movie-card" onclick="vMovie(\''+m.movie_id+'\')">',
           '  <div class="movie-poster">',
           '    '+posterHtml,
           '    <div class="movie-poster-badge"><span class="rating-badge '+RC(m.rating)+'">'+m.rating+'</span></div>',
-          '    <div class="poster-upload-btn" onclick="event.stopPropagation();triggerPosterUpload(\''+m.movie_id+'\')">📷 Change Poster</div>',
+          '    <div class="poster-upload-btn" onclick="event.stopPropagation();triggerPosterUpload(\''+m.movie_id+'\')"><i class="fa-solid fa-arrow-up-from-bracket" style="color: #ff4520;"></i> Change Poster</div>',
           '  </div>',
           '  <div class="movie-card-body">',
           '    <div class="movie-card-title">'+m.title+'</div>',

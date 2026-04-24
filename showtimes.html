@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
     <title>Showtimes — Cinema Admin</title>
     <link rel="stylesheet" href="styles.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
   </head>
   <body>
     <div class="app" id="app"></div>
@@ -43,7 +45,7 @@
 
       document.getElementById('pageContent').innerHTML = `
         <div class="toolbar">
-          <div class="search-box"><span class="search-icon">🔍</span><input type="text" id="stSearch" placeholder="Search movie, screen…" oninput="renderShowtimes()"></div>
+          <div class="search-box"><span class="search-icon"><i class="fa-solid fa-magnifying-glass" style="color: #ff4520;"></i></span><input type="text" id="stSearch" placeholder="Search movie, screen…" oninput="renderShowtimes()"></div>
           <select class="filter-select" id="stDate" onchange="renderShowtimes()">
             <option value="">All Dates</option>
             <option value="2026-04-20">Apr 20, 2026</option>

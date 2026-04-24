@@ -8,17 +8,17 @@
 
 /* ── page definitions ── */
 var PAGES = [
-  {key:'dashboard',  href:'dashboard.html',  icon:'▦',  label:'Dashboard',  section:'Main'},
-  {key:'movies',     href:'movies.html',     icon:'🎞', label:'Movies'},
-  {key:'showtimes',  href:'showtimes.html',  icon:'🗓', label:'Showtimes'},
-  {key:'bookings',   href:'bookings.html',   icon:'🎟', label:'Bookings'},
-  {key:'cinemas',    href:'cinemas.html',    icon:'🏛', label:'Cinemas',    section:'Venue'},
-  {key:'screens',    href:'screens.html',    icon:'📺', label:'Screens'},
-  {key:'seats',      href:'seats.html',      icon:'💺', label:'Seats'},
-  {key:'payments',   href:'payments.html',   icon:'💳', label:'Payments',   section:'Finance'},
-  {key:'customers',  href:'customers.html',  icon:'👤', label:'Customers',  section:'System'},
-  {key:'tickets',    href:'tickets.html',    icon:'🎫', label:'Tickets'},
-  {key:'audit_logs', href:'audit_logs.html', icon:'📋', label:'Audit Logs'},
+  {key:'dashboard',  href:'dashboard.html',  icon:'<i class="fa-solid fa-table-list" style="color: #ff4520;"></i>',  label:'Dashboard',  section:'Main'},
+  {key:'movies',     href:'movies.html',     icon:'<i class="fa-solid fa-clapperboard" style="color: #ff4520;"></i>', label:'Movies'},
+  {key:'showtimes',  href:'showtimes.html',  icon:'<i class="fa-solid fa-calendar-days" style="color: #ff4520;"></i>', label:'Showtimes'},
+  {key:'bookings',   href:'bookings.html',   icon:'<i class="fa-solid fa-film" style="color: #ff4520;"></i>', label:'Bookings'},
+  {key:'cinemas',    href:'cinemas.html',    icon:'<i class="fa-solid fa-building" style="color: #ff4520;"></i>', label:'Cinemas',    section:'Venue'},
+  {key:'screens',    href:'screens.html',    icon:'<i class="fa-solid fa-tv" style="color: #ff4520;"></i>', label:'Screens'},
+  {key:'seats',      href:'seats.html',      icon:'<i class="fa-solid fa-couch" style="color: #ff4520;"></i>', label:'Seats'},
+  {key:'payments',   href:'payments.html',   icon:'<i class="fa-solid fa-credit-card" style="color: #ff4520;"></i>', label:'Payments',   section:'Finance'},
+  {key:'customers',  href:'customers.html',  icon:'<i class="fa-solid fa-users" style="color: #ff4520;"></i>  ', label:'Customers',  section:'System'},
+  {key:'tickets',    href:'tickets.html',    icon:'<i class="fa-solid fa-ticket" style="color: #ff4520;"></i>', label:'Tickets'},
+  {key:'audit_logs', href:'audit_logs.html', icon:'<i class="fa-solid fa-file-pen" style="color: #ff4520;"></i>', label:'Audit Logs'},
 ];
 
 function buildSidebar(activeKey){
@@ -55,7 +55,9 @@ function buildSidebar(activeKey){
 
 function buildTopbar(title, sub, actionLabel){
   var theme = document.documentElement.getAttribute('data-theme') || 'dark';
-  var toggleIcon  = theme === 'dark' ? '☀️' : '🌙';
+  var toggleIcon = theme === 'dark'
+  ? '<i class="fa-solid fa-sun" style="color: rgb(255, 212, 59);"></i>'
+  : '<i class="fa-solid fa-moon" style="color: #C8370A;"></i>';
   var toggleTitle = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
   var btn = actionLabel
     ? '<button class="btn btn-primary" id="topbarAction">'+actionLabel+'</button>'
@@ -87,7 +89,7 @@ var SHARED_MODALS = [
   '  <div class="modal modal-sm">',
   '    <div class="modal-header"><div class="modal-title" id="delTitle">Delete</div><button class="modal-close" onclick="CM(\'deleteModal\')">✕</button></div>',
   '    <div class="modal-body" style="padding:24px 22px">',
-  '      <div class="confirm-icon">🗑️</div>',
+  '      <div class="confirm-icon"><i class="fa-solid fa-trash-can" style="color: #ff4520;"></i></div>',
   '      <p class="confirm-msg">Are you sure you want to delete <span class="confirm-name" id="delName"></span>? This action cannot be undone.</p>',
   '    </div>',
   '    <div class="modal-footer"><button class="btn btn-ghost" onclick="CM(\'deleteModal\')">Cancel</button><button class="btn btn-danger" id="delConfirm">Delete</button></div>',
@@ -115,7 +117,9 @@ function toggleTheme(){
   localStorage.setItem('cinema-theme', next);
   var btn = document.getElementById('themeToggle');
   if(btn){
-    btn.textContent  = next === 'dark' ? '☀️' : '🌙';
+    btn.innerHTML = next === 'dark'
+  ? '<i class="fa-solid fa-sun" style="color: rgb(255, 212, 59);"></i>'
+  : '<i class="fa-solid fa-moon" style="color: #C8370A;"></i>';
     btn.title        = next === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
   }
 }
@@ -199,7 +203,7 @@ function showDelete(title, name, onConfirm){
         '<button class="modal-close" onclick="this.closest(\'.modal-overlay\').remove()">✕</button>'+
       '</div>'+
       '<div class="modal-body">'+
-        '<div class="confirm-icon">🗑️</div>'+
+        '<div class="confirm-icon"><i class="fa-solid fa-trash-can" style="color: #ff4520;"></i></div>'+
         '<div class="confirm-msg">Are you sure you want to delete <span class="confirm-name">'+name+'</span>? This cannot be undone.</div>'+
       '</div>'+
       '<div class="modal-footer">'+

@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Tickets — Cinema Admin</title>
 <link rel="stylesheet" href="styles.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 </head>
 <body>
 <div class="app" id="app"></div>
@@ -85,7 +87,7 @@ document.getElementById('pageContent').innerHTML = `
 </div>
 
 <div class="toolbar">
-  <div class="search-box"><span class="search-icon">🔍</span><input type="text" id="tkSearch" placeholder="Search ticket ID, booking, seat…" oninput="renderTickets()"/></div>
+  <div class="search-box"><span class="search-icon"><i class="fa-solid fa-magnifying-glass" style="color: #ff4520;"></i></span><input type="text" id="tkSearch" placeholder="Search ticket ID, booking, seat…" oninput="renderTickets()"/></div>
   <select class="filter-select" id="tkScreen" onchange="renderTickets()">
     <option value="">All Screens</option>
   </select>
