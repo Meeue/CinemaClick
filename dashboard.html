@@ -152,17 +152,6 @@ function renderSeatMap(){
       var s = document.createElement('div');
       s.className = 'db-seat';
       s.classList.add(seatData.status === 'Taken' ? 'taken' : 'available');
-      s.addEventListener('click', function(){
-        if(seatData.status === 'Taken'){
-          seatData.status = 'Available';
-          s.classList.remove('taken');
-          s.classList.add('available');
-        } else {
-          seatData.status = 'Taken';
-          s.classList.remove('available');
-          s.classList.add('taken');
-        }
-      });
       re.appendChild(s);
     }
     map.appendChild(re);
