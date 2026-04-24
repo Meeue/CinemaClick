@@ -59,7 +59,7 @@
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Showtime ID</th><th>Movie</th><th>Screen</th><th>Show Date</th><th>Start Time</th><th>End Time</th><th>Price</th><th style="text-align:right">Actions</th></tr></thead>
+            <thead><tr><th>Showtime ID</th><th>Movie</th><th>Screen</th><th>Show Date</th><th>Start Time</th><th>End Time</th><th>Price</th><th style="text-align:center">Actions</th></tr></thead>
             <tbody id="stBody"></tbody>
           </table>
           <div class="table-footer"><div class="table-count" id="stCount"></div><div class="pagination" id="stPag"></div></div>
@@ -88,7 +88,7 @@
             +'<td>'+t12(s.start_time)+'</td>'
             +'<td>'+t12(s.end_time)+'</td>'
             +'<td>₱'+s.price+'</td>'
-            +'<td style="text-align:right">'+ABtns('vShowtime(\''+s.showtime_id+'\')','openShowtimeModal(\'edit\',\''+s.showtime_id+'\')','dShowtime(\''+s.showtime_id+'\')')+'</td>';
+            +'<td style="text-align:center">'+ABtns('vShowtime(\''+s.showtime_id+'\')','openShowtimeModal(\'edit\',\''+s.showtime_id+'\')','dShowtime(\''+s.showtime_id+'\')')+'</td>';
         }, 'stBody','stCount','stPag',8,stPg);
         document.getElementById('stPag').querySelectorAll('.page-btn').forEach(function(b){ b.addEventListener('repage', renderShowtimes); });
       }
