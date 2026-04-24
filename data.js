@@ -60,7 +60,7 @@ var seats = [];
         seat_id:   'SEA-'+String(sid).padStart(3,'0'),
         screen_id: sc.screen_id,
         seat_number: RL[r]+c,
-        seat_type: r<2 ? 'VIP' : 'Standard',
+        seat_type: 'Standard',
         status:    Math.random()<0.3 ? 'Taken' : 'Available'
       });
       sid++;

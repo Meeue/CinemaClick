@@ -19,7 +19,7 @@
             <div class="form-group"><label class="form-label">Screen</label><input class="form-input" id="fSeScr" disabled style="opacity:.4"/></div>
             <div class="form-group"><label class="form-label">Seat Number</label><input class="form-input" id="fSeNum" disabled style="opacity:.4"/></div>
             <div class="form-group"><label class="form-label">Seat Type *</label>
-              <select class="form-select" id="fSeType"><option>Standard</option><option>VIP</option></select>
+              <select class="form-select" id="fSeType"><option>Standard</option></select>
             </div>
             <div class="form-group full"><label class="form-label">Status *</label>
               <select class="form-select" id="fSeStat"><option>Available</option><option>Taken</option><option>Maintenance</option></select>
@@ -51,7 +51,6 @@
             <div class="vis-legend">
               <div class="legend-item"><div class="vs va" style="display:inline-block;width:14px;height:12px;border-radius:2px 2px 0 0;margin-right:4px"></div>Available</div>
               <div class="legend-item"><div class="vs vt" style="display:inline-block;width:14px;height:12px;border-radius:2px 2px 0 0;margin-right:4px"></div>Taken</div>
-              <div class="legend-item"><div class="vs vv" style="display:inline-block;width:14px;height:12px;border-radius:2px 2px 0 0;margin-right:4px"></div>VIP</div>
             </div>
           </div>
         </div>
@@ -61,7 +60,7 @@
             <option value="">All Screens</option>
           </select>
           <select class="filter-select" id="seType" onchange="renderSeats()">
-            <option value="">All Types</option><option value="Standard">Standard</option><option value="VIP">VIP</option>
+            <option value="">All Types</option><option value="Standard">Standard</option>
           </select>
           <select class="filter-select" id="seStatus" onchange="renderSeats()">
             <option value="">All Status</option><option value="Available">Available</option><option value="Taken">Taken</option><option value="Maintenance">Maintenance</option>
@@ -126,8 +125,10 @@
           rs.forEach(function(s,i){
             if(i===5){var g=document.createElement('div');g.className='vis-gap';re.appendChild(g);}
             var sv=document.createElement('div'); sv.className='vs';
-            sv.classList.add(s.seat_type==='VIP'?'vv':s.status==='Taken'?'vt':'va');
-            sv.title=s.seat_number+' · '+s.seat_type+' · '+s.status;
+            sv.classList.add(s.status==='Taken'?'vt':'va');
+            sv.title=s.seat_number+' · '+s.seat_type+' · '+s.status + ' (click to edit)';
+            sv.style.cursor = 'pointer';
+            sv.onclick = function(){ eSeat(s.seat_id); };
             re.appendChild(sv);
           });
           cont.appendChild(re);
@@ -139,7 +140,7 @@
         var sf = document.getElementById('seScreen').value;
         var tf = document.getElementById('seType').value;
         var st = document.getElementById('seStatus').value;
-        var TY = {'Standard':'p-gray','VIP':'p-yellow'};
+        var TY = {'Standard':'p-gray'};
         var ST = {'Available':'p-green','Taken':'p-red','Maintenance':'p-yellow'};
         var data = seats.filter(function(s){
           return (!q || s.seat_number.toLowerCase().includes(q) || s.seat_id.toLowerCase().includes(q))
