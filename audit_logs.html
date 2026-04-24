@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Audit Logs — Cinema Admin</title>
+<link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+<div class="app" id="app"></div>
+
+<!-- LOG DETAIL MODAL -->
+<div class="modal-overlay" id="logModal">
+  <div class="modal" style="width:680px">
+    <div class="modal-header">
+      <div class="modal-title" id="lgModalTitle">Log Details</div>
+      <button class="modal-close" onclick="CM('logModal')">✕</button>
+    </div>
+    <div class="modal-body"><div id="lgDetailBody"></div></div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="CM('logModal')">Close</button></div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="layout.js"></script>
+<script>
+injectLayout({page:'audit_logs', title:'Audit Logs', sub:'System transaction history'});
+
+/*
+ * SQL schema for audit_logs table:
+ *
+ * CREATE TABLE audit_logs (
+ *   log_id       BIGINT       AUTO_INCREMENT PRIMARY KEY,
+ *   operation    ENUM('INSERT','UPDATE','DELETE','LOGIN','LOGOUT') NOT NULL,
+ *   table_name   VARCHAR(60)  NOT NULL,
+ *   row_id       VARCHAR(30)  NOT NULL,
+ *   before_value JSON,
+ *   after_value  JSON,
+ *   performed_by VARCHAR(100),
+ *   performed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+ *   ip_address   VARCHAR(45)
+ * );
+ *
+ * Example MySQL AFTER UPDATE trigger (movies table):
+ *
+ * CREATE TRIGGER trg_movies_update AFTER UPDATE ON movies
+ * FOR EACH ROW
+ *   INSERT INTO audit_logs (operation, table_name, row_id, before_value, after_value, performed_by)
+ *   VALUES ('UPDATE','movies', NEW.movie_id,
+ *     JSON_OBJECT('title',OLD.title,'rating',OLD.rating),
+ *     JSON_OBJECT('title',NEW.title,'rating',NEW.rating),
+ *     @current_user);
+ *
+ * READ → GET api/audit_logs.php  (SLAVE DB — read-only, never write to this table from UI)
+ */
+
+var auditLogs = [
+  {log_id:'LOG-0001',operation:'LOGIN',  table_name:'users',     row_id:'USR-001', before_value:null,                                                                       after_value:{email:'admin@cinema.ph',role:'Administrator'},                             performed_by:'admin@cinema.ph', performed_at:'2026-04-20 08:00:01', ip_address:'192.168.1.10'},
+  {log_id:'LOG-0002',operation:'INSERT', table_name:'movies',    row_id:'MOV-004', before_value:null,                                                                       after_value:{title:'Dune: Part Two',genre:'Sci-Fi',rating:'PG-13'},                    performed_by:'admin@cinema.ph', performed_at:'2026-04-20 08:14:22', ip_address:'192.168.1.10'},
+  {log_id:'LOG-0003',operation:'UPDATE', table_name:'movies',    row_id:'MOV-001', before_value:{duration_minutes:140,rating:'PG-13'},                                      after_value:{duration_minutes:148,rating:'PG-13'},                                      performed_by:'admin@cinema.ph', performed_at:'2026-04-20 09:01:55', ip_address:'192.168.1.10'},
+  {log_id:'LOG-0004',operation:'INSERT', table_name:'bookings',  row_id:'BK-00482',before_value:null,                                                                       after_value:{customer_id:'C001',showtime_id:'SHW-001',total_amount:500,status:'Confirmed'}, performed_by:'system',       performed_at:'2026-04-20 10:05:33', ip_address:'203.177.88.21'},
+  {log_id:'LOG-0005',operation:'UPDATE', table_name:'bookings',  row_id:'BK-00480',before_value:{booking_status:'Pending'},                                                 after_value:{booking_status:'Confirmed'},                                               performed_by:'admin@cinema.ph', performed_at:'2026-04-20 11:22:07', ip_address:'192.168.1.10'},
+  {log_id:'LOG-0006',operation:'DELETE', table_name:'showtimes', row_id:'SHW-006', before_value:{movie_id:'MOV-002',screen_id:'SCR-002',show_date:'2026-04-22',price:200},  after_value:null,                                                                      performed_by:'admin@cinema.ph', performed_at:'2026-04-20 12:45:18', ip_address:'192.168.1.10'},
+  {log_id:'LOG-0007',operation:'UPDATE', table_name:'seats',     row_id:'SEA-023', before_value:{status:'Available',seat_type:'Standard'},                                  after_value:{status:'Maintenance',seat_type:'Standard'},                               performed_by:'admin@cinema.ph', performed_at:'2026-04-20 13:10:44', ip_address:'192.168.1.10'},
+  {log_id:'LOG-0008',operation:'INSERT', table_name:'payments',  row_id:'PAY-005', before_value:null,                                                                       after_value:{booking_id:'BK-00478',amount:750,method:'GCash',status:'Paid'},           performed_by:'system',          performed_at:'2026-04-20 14:00:02', ip_address:'203.177.88.22'},
+  {log_id:'LOG-0009',operation:'UPDATE', table_name:'cinemas',   row_id:'CIN-001', before_value:{contact_number:'032-234-5600'},                                            after_value:{contact_number:'032-234-5678'},                                            performed_by:'admin@cinema.ph', performed_at:'2026-04-20 15:33:29', ip_address:'192.168.1.10'},
+  {log_id:'LOG-0010',operation:'INSERT', table_name:'customers', row_id:'C008',    before_value:null,                                                                       after_value:{first_name:'Mark',last_name:'Torres',email:'mark.torres@email.com'},      performed_by:'system',          performed_at:'2026-04-20 16:05:11', ip_address:'203.177.88.30'},
+  {log_id:'LOG-0011',operation:'DELETE', table_name:'screens',   row_id:'SCR-005', before_value:{screen_name:'Screen 5',cinema_id:'CIN-003',total_seats:60},               after_value:null,                                                                      performed_by:'admin@cinema.ph', performed_at:'2026-04-21 09:17:55', ip_address:'192.168.1.10'},
+  {log_id:'LOG-0012',operation:'UPDATE', table_name:'showtimes', row_id:'SHW-003', before_value:{price:250},                                                               after_value:{price:280},                                                               performed_by:'admin@cinema.ph', performed_at:'2026-04-21 10:22:41', ip_address:'192.168.1.10'},
+  {log_id:'LOG-0013',operation:'INSERT', table_name:'bookings',  row_id:'BK-00483',before_value:null,                                                                       after_value:{customer_id:'C003',showtime_id:'SHW-002',total_amount:600,status:'Pending'}, performed_by:'system',        performed_at:'2026-04-21 11:08:19', ip_address:'203.177.88.21'},
+  {log_id:'LOG-0014',operation:'LOGIN',  table_name:'users',     row_id:'USR-001', before_value:null,                                                                       after_value:{email:'admin@cinema.ph',role:'Administrator'},                             performed_by:'admin@cinema.ph', performed_at:'2026-04-21 08:02:05', ip_address:'192.168.1.10'},
+  {log_id:'LOG-0015',operation:'UPDATE', table_name:'movies',    row_id:'MOV-003', before_value:{description:''},                                                          after_value:{description:'Po must face his past while protecting China.'},              performed_by:'admin@cinema.ph', performed_at:'2026-04-21 14:55:30', ip_address:'192.168.1.10'},
+];
+
+var lgPg = {v:1};
+
+document.getElementById('pageContent').innerHTML = `
+<div class="info-banner">
+  <div class="info-banner-icon">📋</div>
+  <div>
+    <div class="info-banner-title">Audit Log — Transaction History</div>
+    <div class="info-banner-text">
+      Read-only record of every INSERT, UPDATE, DELETE, and LOGIN event across all tables.
+      Once connected to MySQL, this page queries the <strong>audit_logs</strong> table from your <strong>slave DB</strong>.
+      Logs are written automatically by MySQL triggers — never editable from the UI.
+    </div>
+  </div>
+</div>
+
+<div class="schema-block" style="margin-bottom:20px">
+  <div class="schema-header">🗄️ &nbsp; audit_logs — Table Schema</div>
+  <table class="schema-table">
+    <thead><tr><th>Column</th><th>Type</th><th>Key</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>log_id</td>       <td>BIGINT AUTO_INCREMENT</td><td><span class="col-pk">PK</span></td><td>Auto-incrementing log entry ID</td></tr>
+      <tr><td>operation</td>    <td>ENUM</td>                 <td></td>                               <td>INSERT, UPDATE, DELETE, LOGIN, LOGOUT</td></tr>
+      <tr><td>table_name</td>   <td>VARCHAR(60)</td>          <td></td>                               <td>The affected table (e.g. movies, bookings)</td></tr>
+      <tr><td>row_id</td>       <td>VARCHAR(30)</td>          <td></td>                               <td>Primary key value of the affected row</td></tr>
+      <tr><td>before_value</td> <td>JSON</td>                 <td></td>                               <td>Row state before the operation — NULL for INSERT</td></tr>
+      <tr><td>after_value</td>  <td>JSON</td>                 <td></td>                               <td>Row state after the operation — NULL for DELETE</td></tr>
+      <tr><td>performed_by</td> <td>VARCHAR(100)</td>         <td></td>                               <td>Email/username of the actor (or "system")</td></tr>
+      <tr><td>performed_at</td> <td>DATETIME</td>             <td></td>                               <td>Timestamp — auto-set by MySQL DEFAULT</td></tr>
+      <tr><td>ip_address</td>   <td>VARCHAR(45)</td>          <td></td>                               <td>Client IP at time of operation</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="toolbar">
+  <div class="search-box"><span class="search-icon">🔍</span><input type="text" id="lgSearch" placeholder="Search log ID, table, row ID, user…" oninput="renderLogs()"/></div>
+  <select class="filter-select" id="lgOperation" onchange="renderLogs()">
+    <option value="">All Operations</option>
+    <option value="INSERT">INSERT</option>
+    <option value="UPDATE">UPDATE</option>
+    <option value="DELETE">DELETE</option>
+    <option value="LOGIN">LOGIN</option>
+  </select>
+  <select class="filter-select" id="lgTable" onchange="renderLogs()">
+    <option value="">All Tables</option>
+    <option>movies</option><option>showtimes</option><option>bookings</option>
+    <option>payments</option><option>customers</option><option>cinemas</option>
+    <option>screens</option><option>seats</option><option>tickets</option><option>users</option>
+  </select>
+</div>
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Log ID</th>
+        <th>Operation</th>
+        <th>Table</th>
+        <th>Row ID</th>
+        <th>Before Value</th>
+        <th>After Value</th>
+        <th>Performed By</th>
+        <th>Timestamp</th>
+        <th style="text-align:right">Detail</th>
+      </tr>
+    </thead>
+    <tbody id="lgBody"></tbody>
+  </table>
+  <div class="table-footer"><div class="table-count" id="lgCount"></div><div class="pagination" id="lgPag"></div></div>
+</div>`;
+
+function clipJson(val){
+  if(!val) return '<span style="font-size:10px;color:var(--text-muted);font-style:italic">null</span>';
+  var str = JSON.stringify(val);
+  return str;
+}
+
+function renderLogs(){
+  var q  = document.getElementById('lgSearch').value.toLowerCase();
+  var op = document.getElementById('lgOperation').value;
+  var tb = document.getElementById('lgTable').value;
+  var data = auditLogs.filter(function(l){
+    return (!q || l.log_id.toLowerCase().includes(q) || l.table_name.toLowerCase().includes(q) || l.row_id.toLowerCase().includes(q) || l.performed_by.toLowerCase().includes(q))
+        && (!op || l.operation===op)
+        && (!tb || l.table_name===tb);
+  });
+  makeTable(data, 9, function(l){
+    var befStr = l.before_value ? JSON.stringify(l.before_value) : null;
+    var aftStr = l.after_value  ? JSON.stringify(l.after_value)  : null;
+    var befCell = befStr
+      ? '<span class="log-val before" title="'+befStr.replace(/"/g,'&quot;')+'">'+befStr.substring(0,30)+(befStr.length>30?'…':'')+'</span>'
+      : '<span style="font-size:10px;color:var(--text-muted);font-style:italic">null</span>';
+    var aftCell = aftStr
+      ? '<span class="log-val after" title="'+aftStr.replace(/"/g,'&quot;')+'">'+aftStr.substring(0,30)+(aftStr.length>30?'…':'')+'</span>'
+      : '<span style="font-size:10px;color:var(--text-muted);font-style:italic">null</span>';
+    return '<td class="td-mono" style="font-size:10px;color:var(--text-muted)">'+l.log_id+'</td>'
+      +'<td><span class="log-op log-'+l.operation+'">'+l.operation+'</span></td>'
+      +'<td><code style="font-size:11px;background:var(--bg-app);padding:2px 7px;border-radius:5px;border:1px solid var(--border);color:var(--primary);font-weight:500">'+l.table_name+'</code></td>'
+      +'<td class="td-mono">'+l.row_id+'</td>'
+      +'<td>'+befCell+'</td>'
+      +'<td>'+aftCell+'</td>'
+      +'<td style="font-size:11px;color:var(--text-secondary)">'+l.performed_by+'</td>'
+      +'<td class="td-muted" style="white-space:nowrap;font-size:11px">'+l.performed_at+'</td>'
+      +'<td style="text-align:right"><button class="btn btn-ghost btn-sm" onclick="vLog(\''+l.log_id+'\')">View</button></td>';
+  }, 'lgBody','lgCount','lgPag', 10, lgPg);
+  document.getElementById('lgPag').querySelectorAll('.page-btn').forEach(function(b){ b.addEventListener('repage', renderLogs); });
+}
+
+function vLog(id){
+  var l = auditLogs.find(function(x){return x.log_id===id;});
+  document.getElementById('lgModalTitle').textContent = 'Log Entry — '+l.log_id;
+  var befStr = l.before_value ? JSON.stringify(l.before_value, null, 2) : 'null';
+  var aftStr = l.after_value  ? JSON.stringify(l.after_value,  null, 2) : 'null';
+  document.getElementById('lgDetailBody').innerHTML = [
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px">',
+    '  <div class="vf"><div class="vf-label">Log ID</div><div class="vf-value">'+l.log_id+'</div></div>',
+    '  <div class="vf"><div class="vf-label">Operation</div><div class="vf-value"><span class="log-op log-'+l.operation+'">'+l.operation+'</span></div></div>',
+    '  <div class="vf"><div class="vf-label">Table</div><div class="vf-value"><code style="color:var(--primary);font-size:13px">'+l.table_name+'</code></div></div>',
+    '  <div class="vf"><div class="vf-label">Row ID</div><div class="vf-value" style="font-family:monospace">'+l.row_id+'</div></div>',
+    '  <div class="vf"><div class="vf-label">Performed By</div><div class="vf-value">'+l.performed_by+'</div></div>',
+    '  <div class="vf"><div class="vf-label">Timestamp</div><div class="vf-value">'+l.performed_at+'</div></div>',
+    '  <div class="vf"><div class="vf-label">IP Address</div><div class="vf-value" style="font-family:monospace">'+(l.ip_address||'—')+'</div></div>',
+    '</div>',
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">',
+    '  <div>',
+    '    <div style="font-size:11px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:var(--red);display:inline-block"></span> Before Value</div>',
+    '    <pre style="background:var(--red-bg);border:1px solid #FECACA;border-radius:10px;padding:14px;font-size:11px;font-family:\'DM Mono\',monospace;color:#991B1B;overflow:auto;max-height:220px;white-space:pre-wrap;word-break:break-all;line-height:1.6">'+befStr+'</pre>',
+    '  </div>',
+    '  <div>',
+    '    <div style="font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block"></span> After Value</div>',
+    '    <pre style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:10px;padding:14px;font-size:11px;font-family:\'DM Mono\',monospace;color:#065F46;overflow:auto;max-height:220px;white-space:pre-wrap;word-break:break-all;line-height:1.6">'+aftStr+'</pre>',
+    '  </div>',
+    '</div>',
+  ].join('');
+  OM('logModal');
+}
+
+document.querySelectorAll('.modal-overlay').forEach(function(o){
+  o.addEventListener('click',function(e){if(e.target===o)o.classList.remove('open');});
+});
+renderLogs();
+</script>
+</body>
+</html>
