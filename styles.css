@@ -15,7 +15,7 @@ body{font-family:'DM Sans',sans-serif;}
   --accent:      #FF4520;
   --accent-hover:#e03a18;
   --accent-dim:  rgba(255,69,32,.14);
-  --gold:        #FFB930;
+  --gold:          #FFB930;
   --gold-dim:    rgba(255,185,48,.14);
   --text:        #F0EAE0;
   --text-muted:  #7A7590;

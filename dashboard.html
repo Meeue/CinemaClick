@@ -4,6 +4,10 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Dashboard — Cinema Admin</title>
+<!-- Must be before styles.css to prevent flash -->
+<script>
+  document.documentElement.setAttribute('data-theme', localStorage.getItem('cinema-theme') || 'dark');
+</script>
 <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
@@ -80,7 +84,6 @@ document.getElementById('pageContent').innerHTML = `
 </div>
 `;
 
-// ── Screen data: each screen has its own seat layout ──
 var currentScreen = 'Screen 1';
 
 function buildScreenTabs(){
@@ -91,9 +94,7 @@ function buildScreenTabs(){
     btn.style.cssText = 'padding:3px 8px;border-radius:5px;font-size:10px;font-weight:500;cursor:pointer;border:.5px solid;transition:all .15s;font-family:inherit;';
     btn.dataset.screen = sc.screen_name;
     btn.id = 'stab-' + sc.screen_name.replace(' ','-');
-    btn.addEventListener('click', function(){
-      switchScreen(sc.screen_name);
-    });
+    btn.addEventListener('click', function(){ switchScreen(sc.screen_name); });
     container.appendChild(btn);
   });
   styleScreenTabs();
@@ -104,13 +105,13 @@ function styleScreenTabs(){
     var btn = document.getElementById('stab-' + sc.screen_name.replace(' ','-'));
     if(!btn) return;
     if(sc.screen_name === currentScreen){
-      btn.style.background = 'var(--accent)';
-      btn.style.color = '#fff';
-      btn.style.borderColor = 'var(--accent)';
+      btn.style.background   = 'var(--accent)';
+      btn.style.color        = '#fff';
+      btn.style.borderColor  = 'var(--accent)';
     } else {
-      btn.style.background = 'var(--bg-surface)';
-      btn.style.color = 'var(--text-muted)';
-      btn.style.borderColor = 'var(--border-md)';
+      btn.style.background   = 'var(--bg-surface)';
+      btn.style.color        = 'var(--text-muted)';
+      btn.style.borderColor  = 'var(--border-md)';
     }
   });
 }
@@ -128,7 +129,7 @@ function renderSeatMap(){
   var scrSeats = seats.filter(function(s){return s.screen_id === sc.screen_id;});
   var rows = [...new Set(scrSeats.map(function(s){return s.seat_number[0];}))].sort();
   var cols = Math.max(...scrSeats.map(function(s){return parseInt(s.seat_number.slice(1));}));
-  var map = document.getElementById('dbSeatMap');
+  var map  = document.getElementById('dbSeatMap');
   var half = Math.floor(cols / 2);
   map.innerHTML = '';
 
@@ -146,12 +147,11 @@ function renderSeatMap(){
         g.className = 'seat-gap-db';
         re.appendChild(g);
       }
-      var seatNum = row + c;
+      var seatNum  = row + c;
       var seatData = scrSeats.find(function(s){return s.seat_number === seatNum;});
       if(!seatData) continue;
       var s = document.createElement('div');
-      s.className = 'db-seat';
-      s.classList.add(seatData.status === 'Taken' ? 'taken' : 'available');
+      s.className = 'db-seat ' + (seatData.status === 'Taken' ? 'taken' : 'available');
       re.appendChild(s);
     }
     map.appendChild(re);
