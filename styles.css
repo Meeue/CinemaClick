@@ -12,8 +12,8 @@ body{font-family:'DM Sans',sans-serif;}
   --bg-sidebar:  #13121E;
   --bg-surface:  #1D1B2E;
   --bg-surface2: #23213a;
-  --accent:      #FF4520;
-  --accent-hover:#e03a18;
+  --accent:      #C96A3A;
+  --accent-hover:#A8552C;
   --accent-dim:  rgba(255,69,32,.14);
   --gold:          #FFB930;
   --gold-dim:    rgba(255,185,48,.14);
@@ -36,14 +36,14 @@ body{font-family:'DM Sans',sans-serif;}
   --bg-sidebar:  #CFC4B6;
   --bg-surface:  #E4DDD4;
   --bg-surface2: #D4C9BC;
-  --accent:      #C8370A;
-  --accent-hover:#a82b07;
+  --accent:      #B05E30;
+  --accent-hover:#8F4C24;
   --accent-dim:  rgba(200,55,10,.1);
   --gold:        #E8A020;
   --gold-dim:    rgba(232,160,32,.13);
   --text:        #1C1C28;
   --text-muted:  #6B6678;
-  --text-faint:  rgba(28,28,40,.25);
+  --text-faint: rgba(28,28,40,.45);
   --border:      rgba(28,28,40,.1);
   --border-md:   rgba(28,28,40,.25);
   --success:     #2E7D32;
