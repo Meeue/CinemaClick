@@ -43,7 +43,7 @@
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Screen ID</th><th>Screen Name</th><th>Cinema</th><th>Total Seats</th><th style="text-align:right">Actions</th></tr></thead>
+            <thead><tr><th>Screen ID</th><th>Screen Name</th><th>Cinema</th><th>Total Seats</th><th style="text-align:center">Actions</th></tr></thead>
             <tbody id="scBody"></tbody>
           </table>
           <div class="table-footer"><div class="table-count" id="scCount"></div><div class="pagination" id="scPag"></div></div>
@@ -66,7 +66,7 @@
             +'<td class="td-bold">'+s.screen_name+'</td>'
             +'<td>'+CiN(s.cinema_id)+'</td>'
             +'<td>'+s.total_seats+'</td>'
-            +'<td style="text-align:right">'+ABtns('vScreen(\''+s.screen_id+'\')','openScreenModal(\'edit\',\''+s.screen_id+'\')','dScreen(\''+s.screen_id+'\')')+'</td>';
+            +'<td style="text-align:center">'+ABtns('vScreen(\''+s.screen_id+'\')','openScreenModal(\'edit\',\''+s.screen_id+'\')','dScreen(\''+s.screen_id+'\')')+'</td>';
         }, 'scBody','scCount','scPag',8,scPg);
         document.getElementById('scPag').querySelectorAll('.page-btn').forEach(function(b){ b.addEventListener('repage', renderScreens); });
       }

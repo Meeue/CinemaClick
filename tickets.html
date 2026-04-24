@@ -95,7 +95,7 @@ document.getElementById('pageContent').innerHTML = `
     <thead>
       <tr>
         <th>Ticket ID</th><th>Booking ID</th><th>Customer</th><th>Movie</th>
-        <th>Seat</th><th>Price</th><th>Issued</th><th style="text-align:right">Actions</th>
+        <th>Seat</th><th>Price</th><th>Issued</th><th style="text-align:center">Actions</th>
       </tr>
     </thead>
     <tbody id="tkBody"></tbody>
@@ -133,7 +133,7 @@ function renderTickets(){
       +'<td><span style="font-size:12px;font-weight:700;color:var(--primary)">'+d.seat+'</span></td>'
       +'<td style="font-weight:600;color:var(--text-primary)">₱'+tk.ticket_price+'</td>'
       +'<td class="td-muted">'+tk.issued_at+'</td>'
-      +'<td style="text-align:right"><div class="actions" style="justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="vTicket(\''+tk.ticket_id+'\')">View</button></div></td>';
+      +'<td style="text-align:center"><div class="actions" style="justify-content:center"><button class="btn btn-ghost btn-sm" onclick="vTicket(\''+tk.ticket_id+'\')">View</button></div></td>';
   }, 'tkBody','tkCount','tkPag', 10, tkPg);
   document.getElementById('tkPag').querySelectorAll('.page-btn').forEach(function(b){ b.addEventListener('repage', renderTickets); });
 }

@@ -37,7 +37,7 @@
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Cinema ID</th><th>Cinema Name</th><th>Location</th><th>Contact Number</th><th>Screens</th><th style="text-align:right">Actions</th></tr></thead>
+            <thead><tr><th>Cinema ID</th><th>Cinema Name</th><th>Location</th><th>Contact Number</th><th>Screens</th><th style="text-align:center">Actions</th></tr></thead>
             <tbody id="ciBody"></tbody>
           </table>
           <div class="table-footer"><div class="table-count" id="ciCount"></div><div class="pagination" id="ciPag"></div></div>
@@ -61,7 +61,7 @@
             +'<td>'+c.location+'</td>'
             +'<td>'+c.contact_number+'</td>'
             +'<td>'+n+' screen'+(n!==1?'s':'')+'</td>'
-            +'<td style="text-align:right">'+ABtns('vCinema(\''+c.cinema_id+'\')','openCinemaModal(\'edit\',\''+c.cinema_id+'\')','dCinema(\''+c.cinema_id+'\')')+'</td>';
+            +'<td style="text-align:center">'+ABtns('vCinema(\''+c.cinema_id+'\')','openCinemaModal(\'edit\',\''+c.cinema_id+'\')','dCinema(\''+c.cinema_id+'\')')+'</td>';
         }, 'ciBody','ciCount','ciPag',8,ciPg);
         document.getElementById('ciPag').querySelectorAll('.page-btn').forEach(function(b){ b.addEventListener('repage', renderCinemas); });
       }

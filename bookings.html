@@ -84,7 +84,7 @@
             +'<td>'+b.booking_date+'</td>'
             +'<td>₱'+b.total_amount.toLocaleString()+'</td>'
             +'<td><span class="pill '+(SC[b.booking_status]||'')+'">'+b.booking_status+'</span></td>'
-            +'<td style="text-align:right">'+ABtns('vBooking(\''+b.booking_id+'\')','openBookingModal(\'edit\',\''+b.booking_id+'\')','dBooking(\''+b.booking_id+'\')')+'</td>';
+            +'<td style="text-align:center">'+ABtns('vBooking(\''+b.booking_id+'\')','openBookingModal(\'edit\',\''+b.booking_id+'\')','dBooking(\''+b.booking_id+'\')')+'</td>';
         }, 'bkBody','bkCount','bkPag',8,bkPg);
         document.getElementById('bkPag').querySelectorAll('.page-btn').forEach(function(b){ b.addEventListener('repage', renderBookings); });
       }

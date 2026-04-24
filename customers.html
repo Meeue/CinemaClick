@@ -97,7 +97,7 @@ document.getElementById('pageContent').innerHTML = `
     <thead>
       <tr>
         <th>Customer ID</th><th>Full Name</th><th>Email</th><th>Phone</th>
-        <th>Status</th><th>Joined</th><th>Bookings</th><th style="text-align:right">Actions</th>
+        <th>Status</th><th>Joined</th><th>Bookings</th><th style="text-align:center">Actions</th>
       </tr>
     </thead>
     <tbody id="cuBody"></tbody>
@@ -124,7 +124,7 @@ function renderCustomers(){
       +'<td><span class="pill '+(STATUS_CLR[c.status]||'p-gray')+'">'+c.status+'</span></td>'
       +'<td class="td-muted">'+c.created_at+'</td>'
       +'<td><span style="font-size:12px;font-weight:700;color:var(--primary)">'+bkCount+'</span></td>'
-      +'<td style="text-align:right">'+ABtns('vCustomer(\''+c.customer_id+'\')','openCustomerModal(\'edit\',\''+c.customer_id+'\')','dCustomer(\''+c.customer_id+'\')')+'</td>';
+      +'<td style="text-align:center">'+ABtns('vCustomer(\''+c.customer_id+'\')','openCustomerModal(\'edit\',\''+c.customer_id+'\')','dCustomer(\''+c.customer_id+'\')')+'</td>';
   }, 'cuBody','cuCount','cuPag', 8, cuPg);
   document.getElementById('cuPag').querySelectorAll('.page-btn').forEach(function(b){ b.addEventListener('repage', renderCustomers); });
 }
