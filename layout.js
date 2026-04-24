@@ -19,12 +19,12 @@ function injectLayout(opts){
     {id:'movies',    icon:'🎬', label:'Movies',     href:'movies.html'},
     {id:'showtimes', icon:'🕐', label:'Showtimes',  href:'showtimes.html'},
     {id:'bookings',  icon:'📋', label:'Bookings',   href:'bookings.html'},
-    {id:'tickets',   icon:'🎟', label:'Tickets',    href:'tickets.html'},
-    {id:'customers', icon:'👤', label:'Customers',  href:'customers.html'},
     {id:'cinemas',   icon:'🏛', label:'Cinemas',    href:'cinemas.html',    section:'Venue'},
     {id:'screens',   icon:'📺', label:'Screens',    href:'screens.html'},
     {id:'seats',     icon:'💺', label:'Seats',      href:'seats.html'},
     {id:'payments',  icon:'💳', label:'Payments',   href:'payments.html',   section:'Finance'},
+    {id:'tickets',   icon:'🎟', label:'Tickets',    href:'tickets.html'},
+    {id:'customers', icon:'👤', label:'Customers',  href:'customers.html'},
   ];
 
   var navHtml = navItems.map(function(item){
