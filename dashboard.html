@@ -16,7 +16,11 @@
 <script src="data.js"></script>
 <script src="layout.js"></script>
 <script>
-injectLayout({page:'dashboard', title:'Dashboard', sub:'Monday, Apr 20, 2026'});
+var _days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+var _months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var _now=new Date();
+var _dateStr=_days[_now.getDay()]+', '+_months[_now.getMonth()]+' '+_now.getDate()+', '+_now.getFullYear();
+injectLayout({page:'dashboard', title:'Dashboard', sub:_dateStr});
 
 document.getElementById('pageContent').innerHTML = `
 <div class="stats-row">
@@ -51,8 +55,8 @@ document.getElementById('pageContent').innerHTML = `
         <div class="screen-lbl">— screen —</div>
         <div class="seat-rows-db" id="dbSeatMap"></div>
         <div class="seat-legend">
-          <div class="legend-item"><div class="legend-dot" style="background:var(--bg-surface2);border:.5px solid var(--border-md)"></div>Available</div>
-          <div class="legend-item"><div class="legend-dot" style="background:var(--border)"></div>Taken</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--success-dim);border:.5px solid var(--success)"></div>Available</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--danger-dim);border:.5px solid var(--danger)"></div>Taken</div>
         </div>
       </div>
     </div>

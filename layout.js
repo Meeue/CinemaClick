@@ -8,17 +8,17 @@
 
 /* ── page definitions ── */
 var PAGES = [
-  {key:'dashboard',  href:'dashboard.html',  icon:'<i class="fa-solid fa-table-list" style="color: #ff4520;"></i>',  label:'Dashboard',  section:'Main'},
-  {key:'movies',     href:'movies.html',     icon:'<i class="fa-solid fa-clapperboard" style="color: #ff4520;"></i>', label:'Movies'},
-  {key:'showtimes',  href:'showtimes.html',  icon:'<i class="fa-solid fa-calendar-days" style="color: #ff4520;"></i>', label:'Showtimes'},
-  {key:'bookings',   href:'bookings.html',   icon:'<i class="fa-solid fa-film" style="color: #ff4520;"></i>', label:'Bookings'},
-  {key:'cinemas',    href:'cinemas.html',    icon:'<i class="fa-solid fa-building" style="color: #ff4520;"></i>', label:'Cinemas',    section:'Venue'},
-  {key:'screens',    href:'screens.html',    icon:'<i class="fa-solid fa-tv" style="color: #ff4520;"></i>', label:'Screens'},
-  {key:'seats',      href:'seats.html',      icon:'<i class="fa-solid fa-couch" style="color: #ff4520;"></i>', label:'Seats'},
-  {key:'payments',   href:'payments.html',   icon:'<i class="fa-solid fa-credit-card" style="color: #ff4520;"></i>', label:'Payments',   section:'Finance'},
-  {key:'customers',  href:'customers.html',  icon:'<i class="fa-solid fa-users" style="color: #ff4520;"></i>  ', label:'Customers',  section:'System'},
-  {key:'tickets',    href:'tickets.html',    icon:'<i class="fa-solid fa-ticket" style="color: #ff4520;"></i>', label:'Tickets'},
-  {key:'audit_logs', href:'audit_logs.html', icon:'<i class="fa-solid fa-file-pen" style="color: #ff4520;"></i>', label:'Audit Logs'},
+  {key:'dashboard',  href:'dashboard.html',  icon:'<i class="fa-solid fa-table-list" style="color: #C96A3A;"></i>',  label:'Dashboard',  section:'Main'},
+  {key:'movies',     href:'movies.html',     icon:'<i class="fa-solid fa-clapperboard" style="color: #C96A3A;"></i>', label:'Movies'},
+  {key:'showtimes',  href:'showtimes.html',  icon:'<i class="fa-solid fa-calendar-days" style="color: #C96A3A;"></i>', label:'Showtimes'},
+  {key:'bookings',   href:'bookings.html',   icon:'<i class="fa-solid fa-film" style="color: #C96A3A;"></i>', label:'Bookings'},
+  {key:'cinemas',    href:'cinemas.html',    icon:'<i class="fa-solid fa-building" style="color: #C96A3A;"></i>', label:'Cinemas',    section:'Venue'},
+  {key:'screens',    href:'screens.html',    icon:'<i class="fa-solid fa-tv" style="color: #C96A3A;"></i>', label:'Screens'},
+  {key:'seats',      href:'seats.html',      icon:'<i class="fa-solid fa-couch" style="color: #C96A3A;"></i>', label:'Seats'},
+  {key:'payments',   href:'payments.html',   icon:'<i class="fa-solid fa-credit-card" style="color: #C96A3A;"></i>', label:'Payments',   section:'Finance'},
+  {key:'customers',  href:'customers.html',  icon:'<i class="fa-solid fa-users" style="color: #C96A3A;"></i>  ', label:'Customers',  section:'System'},
+  {key:'tickets',    href:'tickets.html',    icon:'<i class="fa-solid fa-ticket" style="color: #C96A3A;"></i>', label:'Tickets'},
+  {key:'audit_logs', href:'audit_logs.html', icon:'<i class="fa-solid fa-file-pen" style="color: #C96A3A;"></i>', label:'Audit Logs'},
 ];
 
 function buildSidebar(activeKey){
@@ -34,7 +34,7 @@ function buildSidebar(activeKey){
     '    <div class="logo-mark">',
     '      <div class="logo-icon">🎬</div>',
     '      <div>',
-    '        <div class="logo-text">CineClick</div>',
+    '        <div class="logo-text">CinemaClick</div>',
     '        <div class="logo-sub">Admin Portal</div>',
     '      </div>',
     '    </div>',

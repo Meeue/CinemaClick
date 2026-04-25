@@ -47,7 +47,7 @@ var screens = [
   {screen_id:'SCR-001', screen_name:'Screen 1', cinema_id:'CIN-001', total_seats:120},
   {screen_id:'SCR-002', screen_name:'Screen 2', cinema_id:'CIN-001', total_seats:100},
   {screen_id:'SCR-003', screen_name:'Screen 3', cinema_id:'CIN-002', total_seats:80},
-  {screen_id:'SCR-004', screen_name:'Screen 1', cinema_id:'CIN-002', total_seats:150},
+  {screen_id:'SCR-004', screen_name:'Screen 4', cinema_id:'CIN-002', total_seats:150},
 ];
 
 var seats = [];
