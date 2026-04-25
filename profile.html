@@ -160,23 +160,6 @@ document.getElementById('pageContent').innerHTML = `
         </div>
       </div>
 
-      <!-- Preferences -->
-      <div class="profile-form-section">
-        <div class="profile-section-title">
-          <div class="profile-section-icon">⚙️</div>
-          Preferences
-        </div>
-        <div style="display:flex;flex-direction:column;gap:14px">
-          ${toggle('prefEmail',  'Email Notifications',   'Receive booking & payment alerts via email', true)}
-          ${toggle('prefSMS',    'SMS Notifications',     'Receive urgent alerts via SMS', false)}
-          ${toggle('prefReport', 'Daily Reports',         'Get a daily summary report at 8:00 AM', true)}
-          ${toggle('prefAudit',  'Audit Log Alerts',      'Be notified of DELETE operations in real time', true)}
-        </div>
-        <div style="margin-top:18px;display:flex;justify-content:flex-end">
-          <button class="btn btn-primary" onclick="savePrefs()">Save Preferences</button>
-        </div>
-      </div>
-
       <!-- Danger Zone -->
       <div class="profile-form-section">
         <div class="profile-section-title">

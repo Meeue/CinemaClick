@@ -34,7 +34,7 @@ function buildSidebar(activeKey){
     '    <div class="logo-mark">',
     '      <div class="logo-icon">🎬</div>',
     '      <div>',
-    '        <div class="logo-text">CineAdmin</div>',
+    '        <div class="logo-text">CinemaClick</div>',
     '        <div class="logo-sub">Admin Portal</div>',
     '      </div>',
     '    </div>',
