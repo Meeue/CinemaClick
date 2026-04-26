@@ -24,13 +24,25 @@ $screens = $conn->query(
      FROM screens s JOIN cinemas c ON s.cinema_id=c.cinema_id ORDER BY c.cinema_name, s.screen_name"
 )->fetch_all(MYSQLI_ASSOC);
 
-$active_screen = $_GET['screen'] ?? ($screens[0]['screen_id'] ?? '');
-$seats = [];
+$active_screen = $_GET['screen']   ?? ($screens[0]['screen_id'] ?? '');
+$seat_q        = trim($_GET['sq']  ?? '');
+$status_f      = $_GET['status_f'] ?? '';
+$all_seats   = []; // unfiltered — used for the visual layout
+$seats       = []; // filtered   — used for the table below
 $screen_info = null;
 if ($active_screen) {
-    $sid = $conn->real_escape_string($active_screen);
+    $sid     = $conn->real_escape_string($active_screen);
+    $sq_safe = $conn->real_escape_string($seat_q);
+    $sf_safe = $conn->real_escape_string($status_f);
     $screen_info = $conn->query("SELECT s.*,c.cinema_name FROM screens s JOIN cinemas c ON s.cinema_id=c.cinema_id WHERE s.screen_id='$sid'")->fetch_assoc();
-    $seats = $conn->query("SELECT * FROM seats WHERE screen_id='$sid' ORDER BY seat_number")->fetch_all(MYSQLI_ASSOC);
+    // Always load ALL seats for the visual layout
+    $all_seats = $conn->query("SELECT * FROM seats WHERE screen_id='$sid' ORDER BY seat_number")->fetch_all(MYSQLI_ASSOC);
+    // Apply filters only for the table
+    $scond = ["screen_id='$sid'"];
+    if ($sq_safe) $scond[] = "seat_number LIKE '%$sq_safe%'";
+    if ($sf_safe) $scond[] = "status='$sf_safe'";
+    $swhere = 'WHERE '.implode(' AND ', $scond);
+    $seats = $conn->query("SELECT * FROM seats $swhere ORDER BY seat_number")->fetch_all(MYSQLI_ASSOC);
 }
 
 $seat_counts = [];
@@ -42,7 +54,7 @@ foreach ($screens as $sc) {
 }
 $conn->close();
 
-$seat_rows = array_chunk($seats, 10);
+$seat_rows = array_chunk($all_seats, 10); // layout always uses unfiltered
 require_once '../includes/header.php';
 ?>
 
@@ -98,7 +110,7 @@ document.getElementById('pageContent').innerHTML=`
       <span style="font-size:11px;color:var(--text-muted)"><?= e($screen_info['total_seats']) ?> total seats</span>
     </div>
     <div class="big-screen-bar">◀ SCREEN ▶</div>
-    <?php if ($seats): ?>
+    <?php if ($all_seats): ?>
     <div class="vis-rows">
       <?php foreach($seat_rows as $ri => $row): ?>
       <div class="vis-row">
@@ -132,6 +144,28 @@ document.getElementById('pageContent').innerHTML=`
   </div>
 </div>
 
+<?php if ($screen_info): ?>
+<div class="toolbar" style="margin-top:16px">
+  <form method="GET" style="display:flex;gap:10px;flex:1;flex-wrap:wrap;align-items:center">
+    <input type="hidden" name="screen" value="<?= e($active_screen) ?>"/>
+    <div class="search-box">
+      <span class="search-icon"><i class="fa-solid fa-magnifying-glass" style="color:var(--accent)"></i></span>
+      <input type="text" name="sq" value="<?= e($seat_q) ?>" placeholder="Search seat number…"/>
+    </div>
+    <select class="filter-select" name="status_f" onchange="this.form.submit()">
+      <option value="">All Status</option>
+      <option value="Available"   <?= $status_f==='Available'   ?'selected':'' ?>>Available</option>
+      <option value="Taken"       <?= $status_f==='Taken'       ?'selected':'' ?>>Taken</option>
+      <option value="Maintenance" <?= $status_f==='Maintenance' ?'selected':'' ?>>Maintenance</option>
+    </select>
+    <button class="btn btn-ghost btn-sm" type="submit">Search</button>
+    <?php if ($seat_q || $status_f): ?>
+      <a href="seats.php?screen=<?= e($active_screen) ?>" style="font-size:12px;color:var(--text-muted);align-self:center">Clear</a>
+    <?php endif; ?>
+  </form>
+</div>
+<?php endif; ?>
+
 <?php if ($seats): ?>
 <div class="table-wrap"><table>
   <thead><tr><th>Seat ID</th><th>Seat Number</th><th>Type</th><th>Status</th><th style="text-align:right">Actions</th></tr></thead>
@@ -149,7 +183,7 @@ document.getElementById('pageContent').innerHTML=`
   <?php endforeach; ?>
   </tbody>
 </table>
-<div class="table-footer"><div class="table-count"><?= count($seats) ?> seats</div></div>
+<div class="table-footer"><div class="table-count"><?= count($seats) ?> seat<?= count($seats)!==1?'s':'' ?><?= ($seat_q||$status_f) ? ' found' : '' ?></div></div>
 </div>
 <?php endif; ?>
 `;

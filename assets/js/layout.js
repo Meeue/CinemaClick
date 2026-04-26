@@ -1,12 +1,9 @@
-/* layout.js — shared shell injected on every page */
 
-/* ── theme bootstrap (runs before paint) ── */
 (function(){
   var saved = localStorage.getItem('cinema-theme') || 'dark';
   document.documentElement.setAttribute('data-theme', saved);
 })();
 
-/* ── page definitions (updated to .php) ── */
 var PAGES = [
     {key:'dashboard',  href:'dashboard.php',  icon:'<i class="fa-solid fa-table-list" style="color: #C96A3A;"></i>',  label:'Dashboard',  section:'Main'},
   {key:'movies',     href:'movies.php',     icon:'<i class="fa-solid fa-clapperboard" style="color: #C96A3A;"></i>', label:'Movies'},
