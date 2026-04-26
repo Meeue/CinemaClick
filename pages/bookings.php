@@ -121,8 +121,8 @@ document.getElementById('pageContent').innerHTML=`
     <td><?= pill($r['booking_status']) ?></td>
     <td class="td-muted"><?= e($r['booking_date']) ?></td>
     <td style="text-align:right"><div class="actions">
-      <button class="btn btn-ghost btn-sm" onclick="openEdit(<?= htmlspecialchars(json_encode($r)) ?>)">Edit</button>
-      <button class="btn btn-danger btn-sm" onclick="doDelete('<?= e($r['booking_id']) ?>','<?= e($r['booking_id']) ?>')">Del</button>
+      <button class="btn btn-ghost btn-sm" onclick="openEdit(<?= htmlspecialchars(json_encode($r)) ?>)"><i class="fa-solid fa-pen-to-square" style="color: #7A7590;"></i></button>
+      <button class="btn btn-danger btn-sm" onclick="doDelete('<?= e($r['booking_id']) ?>','<?= e($r['booking_id']) ?>')"><i class="fa-solid fa-trash-can" style="color: #ff4520;"></i></button>
     </div></td>
   </tr>
   <?php endforeach; if(!$rows): ?>

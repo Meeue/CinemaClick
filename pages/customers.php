@@ -1,7 +1,8 @@
 <?php
 require_once '../connect.php';
 require_once '../includes/helpers.php';
-$flash = $flash_type = '';
+$flash      = $_GET['msg']  ?? '';
+$flash_type = $_GET['type'] ?? 'success';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $act  = $_POST['_action'] ?? '';
@@ -111,8 +112,8 @@ document.getElementById('pageContent').innerHTML=`
     <td><?= pill($r['status']) ?></td>
     <td class="td-muted"><?= e(substr($r['created_at'],0,10)) ?></td>
     <td style="text-align:right"><div class="actions">
-      <button class="btn btn-ghost btn-sm" onclick="openEdit(<?= htmlspecialchars(json_encode($r)) ?>)">Edit</button>
-      <button class="btn btn-danger btn-sm" onclick="doDelete('<?= e($r['customer_id']) ?>','<?= e(addslashes($r['first_name'].' '.$r['last_name'])) ?>')">Del</button>
+      <button class="btn btn-ghost btn-sm" onclick="openEdit(<?= htmlspecialchars(json_encode($r)) ?>)"><i class="fa-solid fa-pen-to-square" style="color: #7A7590;"></i></button>
+      <button class="btn btn-danger btn-sm" onclick="doDelete('<?= e($r['customer_id']) ?>','<?= e(addslashes($r['first_name'].' '.$r['last_name'])) ?>')"><i class="fa-solid fa-trash-can" style="color: #ff4520;"></i></button>
     </div></td>
   </tr>
   <?php endforeach; else: ?>

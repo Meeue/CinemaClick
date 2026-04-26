@@ -45,7 +45,7 @@ $occupancy = round($taken_seats / $total_seats * 100);
 $conn->close();
 
 $page_title = 'Dashboard'; $page_key = 'dashboard';
-$page_sub   = 'Welcome back — ' . date('l, M j, Y');
+$page_sub   = 'Welcome admin! ' . date('l, M j, Y');
 require_once '../includes/header.php';
 ?>
 <script>

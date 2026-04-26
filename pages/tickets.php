@@ -81,17 +81,6 @@ injectLayout({page:'tickets',title:'Tickets',sub:'Issued tickets',actionLabel:'+
 document.getElementById('topbarAction').onclick=function(){ OM('addModal'); };
 document.getElementById('pageContent').innerHTML=`
 
-<div style="background:var(--accent-dim);border:.5px solid var(--accent);border-radius:10px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;gap:14px">
-  <div style="font-size:28px">🎫</div>
-  <div>
-    <div style="font-size:13px;font-weight:600;color:var(--text)">Tickets — Issued Seat Passes</div>
-    <div style="font-size:12px;color:var(--text-muted);margin-top:3px">
-      <?= $total_tickets ?> tickets issued &nbsp;·&nbsp; ₱<?= number_format($total_revenue,2) ?> total value.
-      Each ticket links a booking to a specific seat. Read from <strong>SLAVE</strong> DB, writes go to <strong>MASTER</strong>.
-    </div>
-  </div>
-</div>
-
 <div class="toolbar">
   <form method="GET" style="display:flex;gap:10px;flex:1">
     <div class="search-box"><span class="search-icon"><i class="fa-solid fa-magnifying-glass" style="color:var(--accent)"></i></span><input type="text" name="q" value="<?= e($q) ?>" placeholder="Search tickets, customer, seat…"/></div>
@@ -115,7 +104,7 @@ document.getElementById('pageContent').innerHTML=`
     <td style="color:var(--text);font-weight:500">₱<?= number_format($r['ticket_price'],2) ?></td>
     <td class="td-muted"><?= e($r['issued_at'] ?? '—') ?></td>
     <td style="text-align:right">
-      <button class="btn btn-danger btn-sm" onclick="doDelete('<?= e($r['ticket_id']) ?>')">Del</button>
+      <button class="btn btn-danger btn-sm" onclick="doDelete('<?= e($r['ticket_id']) ?>')"><i class="fa-solid fa-trash-can" style="color: #ff4520;"></i></button>
     </td>
   </tr>
   <?php endforeach; if(!$rows): ?>

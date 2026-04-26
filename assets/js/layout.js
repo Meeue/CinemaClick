@@ -8,17 +8,17 @@
 
 /* ── page definitions (updated to .php) ── */
 var PAGES = [
-  {key:'dashboard',  href:'dashboard.php',  icon:'▦',  label:'Dashboard',  section:'Main'},
-  {key:'movies',     href:'movies.php',     icon:'🎞', label:'Movies'},
-  {key:'showtimes',  href:'showtimes.php',  icon:'🗓', label:'Showtimes'},
-  {key:'bookings',   href:'bookings.php',   icon:'🎟', label:'Bookings'},
-  {key:'cinemas',    href:'cinemas.php',    icon:'🏛', label:'Cinemas',    section:'Venue'},
-  {key:'screens',    href:'screens.php',    icon:'📺', label:'Screens'},
-  {key:'seats',      href:'seats.php',      icon:'💺', label:'Seats'},
-  {key:'payments',   href:'payments.php',   icon:'💳', label:'Payments',   section:'Finance'},
-  {key:'customers',  href:'customers.php',  icon:'👤', label:'Customers',  section:'System'},
-  {key:'tickets',    href:'tickets.php',    icon:'🎫', label:'Tickets'},
-  {key:'audit_logs', href:'audit_logs.php', icon:'📋', label:'Audit Logs'},
+    {key:'dashboard',  href:'dashboard.php',  icon:'<i class="fa-solid fa-table-list" style="color: #C96A3A;"></i>',  label:'Dashboard',  section:'Main'},
+  {key:'movies',     href:'movies.php',     icon:'<i class="fa-solid fa-clapperboard" style="color: #C96A3A;"></i>', label:'Movies'},
+  {key:'showtimes',  href:'showtimes.php',  icon:'<i class="fa-solid fa-calendar-days" style="color: #C96A3A;"></i>', label:'Showtimes'},
+  {key:'bookings',   href:'bookings.php',   icon:'<i class="fa-solid fa-film" style="color: #C96A3A;"></i>', label:'Bookings'},
+  {key:'cinemas',    href:'cinemas.php',    icon:'<i class="fa-solid fa-building" style="color: #C96A3A;"></i>', label:'Cinemas',    section:'Venue'},
+  {key:'screens',    href:'screens.php',    icon:'<i class="fa-solid fa-tv" style="color: #C96A3A;"></i>', label:'Screens'},
+  {key:'seats',      href:'seats.php',      icon:'<i class="fa-solid fa-couch" style="color: #C96A3A;"></i>', label:'Seats'},
+  {key:'payments',   href:'payments.php',   icon:'<i class="fa-solid fa-credit-card" style="color: #C96A3A;"></i>', label:'Payments',   section:'Finance'},
+  {key:'customers',  href:'customers.php',  icon:'<i class="fa-solid fa-users" style="color: #C96A3A;"></i>  ', label:'Customers',  section:'System'},
+  {key:'tickets',    href:'tickets.php',    icon:'<i class="fa-solid fa-ticket" style="color: #C96A3A;"></i>', label:'Tickets'},
+  {key:'audit_logs', href:'audit_logs.php', icon:'<i class="fa-solid fa-file-pen" style="color: #C96A3A;"></i>', label:'Audit Logs'},
 ];
 
 function buildSidebar(activeKey){
@@ -32,9 +32,9 @@ function buildSidebar(activeKey){
     '<div class="sidebar">',
     '  <div class="sidebar-logo">',
     '    <div class="logo-mark">',
-    '      <div class="logo-icon">🎬</div>',
+    '      <div class="logo-icon"></div>',
     '      <div>',
-    '        <div class="logo-text">CineAdmin</div>',
+    '        <div class="logo-text">CinemaClick</div>',
     '        <div class="logo-sub">Admin Portal</div>',
     '      </div>',
     '    </div>',
@@ -55,7 +55,9 @@ function buildSidebar(activeKey){
 
 function buildTopbar(title, sub, actionLabel){
   var theme = document.documentElement.getAttribute('data-theme') || 'dark';
-  var toggleIcon  = theme === 'dark' ? '☀️' : '🌙';
+  var toggleIcon = theme === 'dark'
+  ? '<i class="fa-solid fa-sun" style="color: rgb(255, 212, 59);"></i>'
+  : '<i class="fa-solid fa-moon" style="color: #C8370A;"></i>';
   var toggleTitle = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
   var btn = actionLabel
     ? '<button class="btn btn-primary" id="topbarAction">'+actionLabel+'</button>'
@@ -68,8 +70,7 @@ function buildTopbar(title, sub, actionLabel){
     '  </div>',
     '  <div class="topbar-right">',
     '    '+btn,
-    '    <button class="theme-toggle" id="themeToggle" title="'+toggleTitle+'">'+toggleIcon+'</button>',
-    '    <a href="profile.php" class="avatar" title="My Profile" id="topbarAvatar">JD</a>',
+'    <button class="theme-toggle" id="themeToggle" title="'+toggleTitle+'">'+toggleIcon+'</button>',    '    <a href="profile.php" class="avatar" title="My Profile" id="topbarAvatar">JD</a>',
     '  </div>',
     '</div>',
   ].join('');
@@ -119,7 +120,9 @@ function toggleTheme(){
   localStorage.setItem('cinema-theme', next);
   var btn = document.getElementById('themeToggle');
   if(btn){
-    btn.textContent  = next === 'dark' ? '☀️' : '🌙';
+    btn.innerHTML = next === 'dark'
+  ? '<i class="fa-solid fa-sun" style="color: rgb(255, 212, 59);"></i>'
+  : '<i class="fa-solid fa-moon" style="color: #C8370A;"></i>';
     btn.title        = next === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
   }
 }
@@ -139,7 +142,7 @@ function showDelete(title, name, onConfirm){
         '<button class="modal-close" onclick="this.closest(\'.modal-overlay\').remove()">✕</button>'+
       '</div>'+
       '<div class="modal-body" style="padding:28px 22px;text-align:center">'+
-        '<div class="confirm-icon">🗑️</div>'+
+        '<div class="confirm-icon"><i class="fa-solid fa-trash-can" style="color: #ff4520;"></i></div>'+
         '<div class="confirm-msg">Are you sure you want to delete <span class="confirm-name">'+name+'</span>?<br>This action cannot be undone.</div>'+
       '</div>'+
       '<div class="modal-footer">'+

@@ -129,8 +129,8 @@ document.getElementById('pageContent').innerHTML=`
     <td><?= date('g:i A', strtotime($r['end_time'])) ?></td>
     <td style="color:var(--text);font-weight:500">₱<?= number_format($r['price'],2) ?></td>
     <td style="text-align:right"><div class="actions">
-      <button class="btn btn-ghost btn-sm" onclick="openEdit(<?= htmlspecialchars(json_encode($r)) ?>)">Edit</button>
-      <button class="btn btn-danger btn-sm" onclick="doDelete('<?= e($r['showtime_id']) ?>','<?= e(addslashes($r['title'])) ?> on <?= e($r['show_date']) ?>')">Del</button>
+      <button class="btn btn-ghost btn-sm" onclick="openEdit(<?= htmlspecialchars(json_encode($r)) ?>)"><i class="fa-solid fa-pen-to-square" style="color: #7A7590;"></i></button>
+      <button class="btn btn-danger btn-sm" onclick="doDelete('<?= e($r['showtime_id']) ?>','<?= e(addslashes($r['title'])) ?> on <?= e($r['show_date']) ?>')"><i class="fa-solid fa-trash-can" style="color: #ff4520;"></i></button>
     </div></td>
   </tr>
   <?php endforeach; if(!$rows): ?>

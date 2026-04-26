@@ -91,8 +91,9 @@ document.getElementById('pageContent').innerHTML=`
     <td><?= e($r['contact_number'] ?: '—') ?></td>
     <td><span class="pill p-purple"><?= $r['screen_count'] ?> screens</span></td>
     <td style="text-align:right"><div class="actions">
-      <button class="btn btn-ghost btn-sm" onclick="openEdit(<?= htmlspecialchars(json_encode($r)) ?>)">Edit</button>
-      <button class="btn btn-danger btn-sm" onclick="doDelete('<?= e($r['cinema_id']) ?>','<?= e(addslashes($r['cinema_name'])) ?>')">Del</button>
+      <button class="btn btn-ghost btn-sm" onclick="openEdit(<?= htmlspecialchars(json_encode($r)) ?>)"><i class="fa-solid fa-pen-to-square" style="color: #7A7590;"></i></button>
+      <button class="btn btn-danger btn-sm" onclick="doDelete('<?= e($r['cinema_id']) ?>','<?= e(addslashes($r['cinema_name'])) ?>')"><i class="fa-solid fa-trash-can" sty
+      le="color: #ff4520;"></i></button>
     </div></td>
   </tr>
   <?php endforeach; if(!$rows): ?>
