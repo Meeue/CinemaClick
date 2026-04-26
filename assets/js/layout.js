@@ -269,3 +269,118 @@ function makeTable(data, colCount, rowFn, bodyId, countId, pagId, perPage, pgObj
     });
   });
 }
+
+/* ══════════════════════════════════════════════════════════════
+   AJAX FORM HELPERS — No-reload save / update / delete
+   ══════════════════════════════════════════════════════════════ */
+
+/**
+ * showResultModal(message, type)
+ * Shows a centered popup after a CRUD action completes.
+ * type: 'success' | 'error'
+ * On close → reloads the page so the table refreshes.
+ */
+function showResultModal(message, type) {
+  type = type || 'success';
+  var isSuccess = type === 'success';
+  var icon     = isSuccess
+    ? '<i class="fa-solid fa-circle-check" style="color:var(--success);font-size:40px"></i>'
+    : '<i class="fa-solid fa-circle-xmark"  style="color:var(--danger);font-size:40px"></i>';
+  var titleTxt = isSuccess ? 'Success' : 'Error';
+  var btnCls   = isSuccess ? 'btn-primary' : 'btn-danger';
+
+  var overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML =
+    '<div class="modal modal-sm">' +
+      '<div class="modal-header">' +
+        '<div class="modal-title">' + titleTxt + '</div>' +
+        '<button class="modal-close" id="rmClose">✕</button>' +
+      '</div>' +
+      '<div class="modal-body" style="padding:32px 24px;text-align:center">' +
+        '<div style="margin-bottom:14px">' + icon + '</div>' +
+        '<div style="font-size:14px;color:var(--text);line-height:1.5">' + message + '</div>' +
+      '</div>' +
+      '<div class="modal-footer" style="justify-content:center">' +
+        '<button class="btn ' + btnCls + '" id="rmOk">Close</button>' +
+      '</div>' +
+    '</div>';
+
+  document.body.appendChild(overlay);
+  requestAnimationFrame(function(){ overlay.classList.add('open'); });
+
+  function closeAndRefresh() {
+    overlay.classList.remove('open');
+    setTimeout(function(){
+      overlay.remove();
+      if (isSuccess) location.reload();
+    }, 200);
+  }
+
+  overlay.querySelector('#rmClose').addEventListener('click', closeAndRefresh);
+  overlay.querySelector('#rmOk').addEventListener('click', closeAndRefresh);
+  overlay.addEventListener('click', function(e){ if (e.target === overlay) closeAndRefresh(); });
+}
+
+/**
+ * ajaxForm(formEl, options)
+ * Intercepts a form's submit event, sends via fetch(), then shows
+ * showResultModal() with the server response.
+ *
+ * options.closeModal  — modal id to close before sending (optional)
+ * options.onSuccess   — extra callback on success (optional)
+ *
+ * Server must respond with JSON: { message: "...", type: "success"|"error" }
+ */
+function ajaxForm(formEl, options) {
+  options = options || {};
+  formEl.addEventListener('submit', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Close the form modal first (add/edit modal)
+    if (options.closeModal) {
+      CM(options.closeModal);
+    }
+
+    var fd = new FormData(formEl);
+    var url = formEl.action || window.location.href;
+
+    fetch(url, {
+      method: 'POST',
+      headers: { 'X-Requested-With': 'fetch' },
+      body: fd
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (options.onSuccess && data.type === 'success') options.onSuccess(data);
+      showResultModal(data.message, data.type);
+    })
+    .catch(function(err) {
+      showResultModal('An unexpected error occurred. Please try again.', 'error');
+    });
+  });
+}
+
+/**
+ * ajaxDelete(formEl, message, name)
+ * Shows the existing showDelete confirm, then on confirm submits via fetch
+ * and shows showResultModal.
+ */
+function ajaxDelete(formEl, title, name) {
+  showDelete(title, name, function() {
+    var fd = new FormData(formEl);
+    fetch(window.location.href, {
+      method: 'POST',
+      headers: { 'X-Requested-With': 'fetch' },
+      body: fd
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      showResultModal(data.message, data.type);
+    })
+    .catch(function() {
+      showResultModal('An unexpected error occurred. Please try again.', 'error');
+    });
+  });
+}

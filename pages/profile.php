@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once '../connect.php';
 require_once '../includes/helpers.php';
 $flash = $flash_type = '';
@@ -11,27 +12,23 @@ $stat_movies   = $conn->query("SELECT COUNT(*) AS c FROM movies")->fetch_assoc()
 $stat_screens  = $conn->query("SELECT COUNT(*) AS c FROM screens")->fetch_assoc()['c'];
 $conn->close();
 
-// Profile save (name/email/role stored in session-like cookie; password on master)
-session_start();
 if ($_SERVER["REQUEST_METHOD"] === "POST" && ($_POST["_action"] ?? "") === "update_profile") {
     $conn  = getMasterConn();
     $fname = $conn->real_escape_string(trim($_POST['first_name'] ?? ''));
     $lname = $conn->real_escape_string(trim($_POST['last_name']  ?? ''));
     $email = $conn->real_escape_string(trim($_POST['email']      ?? ''));
     $phone = $conn->real_escape_string(trim($_POST['phone']      ?? ''));
-    // Store profile in session (simple approach — no auth system needed for admin panel)
-    session_start();
     $_SESSION['admin_fname'] = $fname;
     $_SESSION['admin_lname'] = $lname;
     $_SESSION['admin_email'] = $email;
     $_SESSION['admin_phone'] = $phone;
     $conn->close();
     $flash = 'Profile updated successfully.'; $flash_type = 'success';
+    if (isAjax()) jsonResponse($flash, $flash_type);
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['_action'] ?? '') === 'change_password') {
     $conn    = getMasterConn();
-    $current = $_POST['current_password'] ?? '';
     $new     = $_POST['new_password']     ?? '';
     $confirm = $_POST['confirm_password'] ?? '';
     if ($new !== $confirm) {
@@ -39,10 +36,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['_action'] ?? '') === 'chan
     } elseif (strlen($new) < 6) {
         $flash = 'Password must be at least 6 characters.'; $flash_type = 'error';
     } else {
-        // In a real app, verify current password against DB
         $flash = 'Password changed successfully.'; $flash_type = 'success';
     }
     $conn->close();
+    if (isAjax()) jsonResponse($flash, $flash_type);
 }
 
 $fname = $_SESSION['admin_fname'] ?? 'Juan';
@@ -85,7 +82,6 @@ document.getElementById('pageContent').innerHTML = `
         <div>🗓 Member since 2024</div>
       </div>
       <hr class="profile-divider"/>
-      <!-- Theme Toggle -->
       <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0">
         <span style="font-size:12px;color:var(--text-muted)">Theme</span>
         <button onclick="toggleTheme()" style="background:var(--bg-surface2);border:.5px solid var(--border-md);border-radius:20px;padding:4px 14px;font-size:12px;color:var(--text-muted);cursor:pointer" id="themeBtn">
@@ -104,7 +100,7 @@ document.getElementById('pageContent').innerHTML = `
         <div class="profile-section-icon">👤</div>
         Personal Information
       </div>
-      <form method="POST">
+      <form method="POST" id="profileForm">
         <input type="hidden" name="_action" value="update_profile">
         <div class="form-grid">
           <div class="form-group"><label class="form-label">First Name</label><input class="form-input" name="first_name" value="<?= e($fname) ?>" required/></div>
@@ -125,7 +121,7 @@ document.getElementById('pageContent').innerHTML = `
         <div class="profile-section-icon">🔒</div>
         Change Password
       </div>
-      <form method="POST">
+      <form method="POST" id="passwordForm">
         <input type="hidden" name="_action" value="change_password">
         <div class="form-grid">
           <div class="form-group full"><label class="form-label">Current Password</label><input class="form-input" name="current_password" type="password" placeholder="Enter current password"/></div>
@@ -167,8 +163,20 @@ document.getElementById('pageContent').innerHTML = `
 
   </div>
 </div>
-<?= flashMsg($flash, $flash_type) ?>
 `;
+
+// Wire AJAX — profile doesn't need page reload on success (just update display)
+ajaxForm(document.getElementById('profileForm'), {
+  onSuccess: function(data){
+    // Update display name from form values
+    var fn = document.querySelector('[name=first_name]')?.value || '';
+    var ln = document.querySelector('[name=last_name]')?.value  || '';
+    var el = document.getElementById('displayName');
+    if(el) el.textContent = fn + ' ' + ln;
+  }
+});
+// Password form — no reload needed either; just show result
+ajaxForm(document.getElementById('passwordForm'));
 
 // Avatar upload preview
 function handleAvatar(e){
@@ -180,7 +188,6 @@ function handleAvatar(e){
     img.src = ev.target.result;
     img.style.display = 'block';
     document.getElementById('avatarInitials').style.display = 'none';
-    // Save initials to localStorage for sidebar sync
     localStorage.setItem('cinema-profile-initials', document.getElementById('avatarInitials').textContent);
   };
   reader.readAsDataURL(file);
@@ -193,7 +200,6 @@ function handleAvatar(e){
   if(btn) btn.textContent = t === 'dark' ? '☀️ Light' : '🌙 Dark';
 })();
 
-// Override toggleTheme to also update button label
 var _origToggle = window.toggleTheme;
 window.toggleTheme = function(){
   _origToggle();

@@ -14,6 +14,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         else { $flash='Error: '.$conn->error; $flash_type='error'; }
     }
     $conn->close();
+
+    if (isAjax()) jsonResponse($flash, $flash_type);
 }
 
 $conn    = getSlaveConn();
@@ -40,7 +42,6 @@ foreach ($screens as $sc) {
 }
 $conn->close();
 
-// Build seat grid — split into rows of ~10
 $seat_rows = array_chunk($seats, 10);
 require_once '../includes/header.php';
 ?>
@@ -49,7 +50,7 @@ require_once '../includes/header.php';
 <div class="modal-overlay" id="seatModal">
   <div class="modal" style="max-width:360px">
     <div class="modal-header"><div class="modal-title">Edit Seat</div><button class="modal-close" onclick="CM('seatModal')">✕</button></div>
-    <form method="POST"><input type="hidden" name="_action" value="update_status"><input type="hidden" name="seat_id" id="s_id">
+    <form method="POST" id="seatForm"><input type="hidden" name="_action" value="update_status"><input type="hidden" name="seat_id" id="s_id">
     <div class="modal-body"><div class="form-grid">
       <div class="form-group"><label class="form-label">Seat ID</label><input class="form-input" id="s_sid" disabled style="opacity:.4"/></div>
       <div class="form-group"><label class="form-label">Seat Number</label><input class="form-input" id="s_num" disabled style="opacity:.4"/></div>
@@ -151,9 +152,10 @@ document.getElementById('pageContent').innerHTML=`
 <div class="table-footer"><div class="table-count"><?= count($seats) ?> seats</div></div>
 </div>
 <?php endif; ?>
-
-<?= flashMsg($flash,$flash_type) ?>
 `;
+
+// Wire AJAX on the seat edit form
+ajaxForm(document.getElementById('seatForm'), { closeModal: 'seatModal' });
 
 function openSeatEdit(id, num, status){
   document.getElementById('s_id').value   = id;

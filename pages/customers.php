@@ -1,8 +1,7 @@
 <?php
 require_once '../connect.php';
 require_once '../includes/helpers.php';
-$flash      = $_GET['msg']  ?? '';
-$flash_type = $_GET['type'] ?? 'success';
+$flash      = $flash_type = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $act  = $_POST['_action'] ?? '';
@@ -39,6 +38,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         else { $flash='Error: '.$conn->error; $flash_type='error'; }
     }
     $conn->close();
+
+    if (isAjax()) jsonResponse($flash, $flash_type);
 }
 
 $conn  = getSlaveConn();
@@ -56,7 +57,7 @@ require_once '../includes/header.php';
 
 <div class="modal-overlay" id="addModal"><div class="modal">
   <div class="modal-header"><div class="modal-title">Add Customer</div><button class="modal-close" onclick="CM('addModal')">✕</button></div>
-  <form method="POST"><input type="hidden" name="_action" value="insert">
+  <form method="POST" id="addForm"><input type="hidden" name="_action" value="insert">
   <div class="modal-body"><div class="form-grid">
     <div class="form-group"><label class="form-label">First Name *</label><input class="form-input" name="first_name" required/></div>
     <div class="form-group"><label class="form-label">Last Name *</label><input class="form-input" name="last_name" required/></div>
@@ -71,7 +72,7 @@ require_once '../includes/header.php';
 
 <div class="modal-overlay" id="editModal"><div class="modal">
   <div class="modal-header"><div class="modal-title">Edit Customer</div><button class="modal-close" onclick="CM('editModal')">✕</button></div>
-  <form method="POST"><input type="hidden" name="_action" value="update"><input type="hidden" name="customer_id" id="e_id">
+  <form method="POST" id="editForm"><input type="hidden" name="_action" value="update"><input type="hidden" name="customer_id" id="e_id">
   <div class="modal-body"><div class="form-grid">
     <div class="form-group"><label class="form-label">First Name *</label><input class="form-input" name="first_name" id="e_fn" required/></div>
     <div class="form-group"><label class="form-label">Last Name *</label><input class="form-input" name="last_name" id="e_ln" required/></div>
@@ -123,8 +124,11 @@ document.getElementById('pageContent').innerHTML=`
 </table>
 <div class="table-footer"><div class="table-count"><?= count($rows) ?> records</div></div>
 </div>
-<?= flashMsg($flash, $flash_type) ?>
 `;
+
+ajaxForm(document.getElementById('addForm'),  { closeModal: 'addModal'  });
+ajaxForm(document.getElementById('editForm'), { closeModal: 'editModal' });
+
 function openEdit(r){
   document.getElementById('e_id').value = r.customer_id;
   document.getElementById('e_fn').value = r.first_name;
@@ -134,11 +138,9 @@ function openEdit(r){
   document.getElementById('e_st').value = r.status;
   OM('editModal');
 }
-function doDelete(id,name){
-  showDelete('Delete Customer','"'+name+'"',function(){
-    document.getElementById('delId').value=id;
-    document.getElementById('delForm').submit();
-  });
+function doDelete(id, name){
+  document.getElementById('delId').value = id;
+  ajaxDelete(document.getElementById('delForm'), 'Delete Customer', '"'+name+'"');
 }
 </script>
 <?php require_once '../includes/footer.php'; ?>

@@ -34,6 +34,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         else { $flash='Error: '.$conn->error; $flash_type='error'; }
     }
     $conn->close();
+
+    // AJAX: return JSON instead of redirecting
+    if (isAjax()) jsonResponse($flash, $flash_type);
 }
 
 $conn = getSlaveConn();
@@ -47,7 +50,7 @@ require_once '../includes/header.php';
 
 <div class="modal-overlay" id="addModal"><div class="modal">
   <div class="modal-header"><div class="modal-title">Add Cinema</div><button class="modal-close" onclick="CM('addModal')">✕</button></div>
-  <form method="POST"><input type="hidden" name="_action" value="insert">
+  <form method="POST" id="addForm"><input type="hidden" name="_action" value="insert">
   <div class="modal-body"><div class="form-grid">
     <div class="form-group full"><label class="form-label">Cinema Name *</label><input class="form-input" name="cinema_name" required placeholder="e.g. SM Cinema Cebu"/></div>
     <div class="form-group full"><label class="form-label">Location *</label><input class="form-input" name="location" required placeholder="e.g. SM City Cebu, North Reclamation"/></div>
@@ -59,7 +62,7 @@ require_once '../includes/header.php';
 
 <div class="modal-overlay" id="editModal"><div class="modal">
   <div class="modal-header"><div class="modal-title">Edit Cinema</div><button class="modal-close" onclick="CM('editModal')">✕</button></div>
-  <form method="POST"><input type="hidden" name="_action" value="update"><input type="hidden" name="cinema_id" id="e_id">
+  <form method="POST" id="editForm"><input type="hidden" name="_action" value="update"><input type="hidden" name="cinema_id" id="e_id">
   <div class="modal-body"><div class="form-grid">
     <div class="form-group full"><label class="form-label">Cinema Name *</label><input class="form-input" name="cinema_name" id="e_name" required/></div>
     <div class="form-group full"><label class="form-label">Location *</label><input class="form-input" name="location" id="e_loc" required/></div>
@@ -92,8 +95,7 @@ document.getElementById('pageContent').innerHTML=`
     <td><span class="pill p-purple"><?= $r['screen_count'] ?> screens</span></td>
     <td style="text-align:right"><div class="actions">
       <button class="btn btn-ghost btn-sm" onclick="openEdit(<?= htmlspecialchars(json_encode($r)) ?>)"><i class="fa-solid fa-pen-to-square" style="color: #7A7590;"></i></button>
-      <button class="btn btn-danger btn-sm" onclick="doDelete('<?= e($r['cinema_id']) ?>','<?= e(addslashes($r['cinema_name'])) ?>')"><i class="fa-solid fa-trash-can" sty
-      le="color: #ff4520;"></i></button>
+      <button class="btn btn-danger btn-sm" onclick="doDelete('<?= e($r['cinema_id']) ?>','<?= e(addslashes($r['cinema_name'])) ?>')"><i class="fa-solid fa-trash-can" style="color: #ff4520;"></i></button>
     </div></td>
   </tr>
   <?php endforeach; if(!$rows): ?>
@@ -103,8 +105,12 @@ document.getElementById('pageContent').innerHTML=`
 </table>
 <div class="table-footer"><div class="table-count"><?= count($rows) ?> records</div></div>
 </div>
-<?= flashMsg($flash,$flash_type) ?>
 `;
+
+// Wire up AJAX form submissions
+ajaxForm(document.getElementById('addForm'),  { closeModal: 'addModal'  });
+ajaxForm(document.getElementById('editForm'), { closeModal: 'editModal' });
+
 function openEdit(r){
   document.getElementById('e_id').value   = r.cinema_id;
   document.getElementById('e_name').value = r.cinema_name;
@@ -112,11 +118,9 @@ function openEdit(r){
   document.getElementById('e_con').value  = r.contact_number||'';
   OM('editModal');
 }
-function doDelete(id,name){
-  showDelete('Delete Cinema','"'+name+'"',function(){
-    document.getElementById('delId').value=id;
-    document.getElementById('delForm').submit();
-  });
+function doDelete(id, name){
+  document.getElementById('delId').value = id;
+  ajaxDelete(document.getElementById('delForm'), 'Delete Cinema', '"'+name+'"');
 }
 </script>
 <?php require_once '../includes/footer.php'; ?>

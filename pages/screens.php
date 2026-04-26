@@ -6,17 +6,33 @@ $flash = $flash_type = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $act  = $_POST['_action'] ?? '';
     $conn = getMasterConn();
+
     if ($act === 'insert') {
         $id    = genId($conn,'screens','screen_id','SCR');
         $cid   = $conn->real_escape_string($_POST['cinema_id']   ?? '');
         $sname = $conn->real_escape_string(trim($_POST['screen_name'] ?? ''));
         $seats = (int)($_POST['total_seats'] ?? 100);
         if ($cid && $sname) {
-            if ($conn->query("INSERT INTO screens VALUES ('$id','$cid','$sname',$seats)"))
-                { $flash="Screen \"$sname\" added."; $flash_type='success'; }
-            else { $flash='Error: '.$conn->error; $flash_type='error'; }
+            if ($conn->query("INSERT INTO screens VALUES ('$id','$cid','$sname',$seats)")) {
+                // Auto-generate seat rows for this screen
+                $rows_count = (int)ceil($seats / 10);
+                $seat_num   = 1;
+                for ($r = 0; $r < $rows_count; $r++) {
+                    $row_letter = chr(65 + $r); // A, B, C …
+                    $cols = min(10, $seats - ($r * 10));
+                    for ($c = 1; $c <= $cols; $c++) {
+                        $seat_label = $conn->real_escape_string($row_letter . str_pad($c, 2, '0', STR_PAD_LEFT));
+                        $sid_val    = $conn->real_escape_string($id . '-' . str_pad($seat_num, 3, '0', STR_PAD_LEFT));
+                        $conn->query("INSERT INTO seats (seat_id, screen_id, seat_number, seat_type, status)
+                                      VALUES ('$sid_val','$id','$seat_label','Standard','Available')");
+                        $seat_num++;
+                    }
+                }
+                $flash="Screen \"$sname\" added with $seats seats."; $flash_type='success';
+            } else { $flash='Error: '.$conn->error; $flash_type='error'; }
         } else { $flash='Cinema and screen name required.'; $flash_type='error'; }
     }
+
     if ($act === 'update') {
         $id    = $conn->real_escape_string($_POST['screen_id']   ?? '');
         $cid   = $conn->real_escape_string($_POST['cinema_id']   ?? '');
@@ -26,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             { $flash="Screen updated."; $flash_type='success'; }
         else { $flash='Error: '.$conn->error; $flash_type='error'; }
     }
+
     if ($act === 'delete') {
         $id = $conn->real_escape_string($_POST['screen_id'] ?? '');
         $row = $conn->query("SELECT screen_name FROM screens WHERE screen_id='$id'")->fetch_assoc();
@@ -34,6 +51,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         else { $flash='Error: '.$conn->error; $flash_type='error'; }
     }
     $conn->close();
+
+    if (isAjax()) jsonResponse($flash, $flash_type);
 }
 
 $conn    = getSlaveConn();
@@ -54,11 +73,11 @@ require_once '../includes/header.php';
 
 <div class="modal-overlay" id="addModal"><div class="modal">
   <div class="modal-header"><div class="modal-title">Add Screen</div><button class="modal-close" onclick="CM('addModal')">✕</button></div>
-  <form method="POST"><input type="hidden" name="_action" value="insert">
+  <form method="POST" id="addForm"><input type="hidden" name="_action" value="insert">
   <div class="modal-body"><div class="form-grid">
     <div class="form-group full"><label class="form-label">Cinema *</label><select class="form-select" name="cinema_id"><?= $cinema_opts ?></select></div>
     <div class="form-group"><label class="form-label">Screen Name *</label><input class="form-input" name="screen_name" required placeholder="e.g. Screen A"/></div>
-    <div class="form-group"><label class="form-label">Total Seats *</label><input class="form-input" name="total_seats" type="number" value="120" min="1"/></div>
+    <div class="form-group"><label class="form-label">Total Seats *</label><input class="form-input" name="total_seats" type="number" value="120" min="1" max="260"/></div>
   </div></div>
   <div class="modal-footer"><button type="button" class="btn btn-ghost" onclick="CM('addModal')">Cancel</button><button class="btn btn-primary">Save Screen</button></div>
   </form>
@@ -66,7 +85,7 @@ require_once '../includes/header.php';
 
 <div class="modal-overlay" id="editModal"><div class="modal">
   <div class="modal-header"><div class="modal-title">Edit Screen</div><button class="modal-close" onclick="CM('editModal')">✕</button></div>
-  <form method="POST"><input type="hidden" name="_action" value="update"><input type="hidden" name="screen_id" id="e_id">
+  <form method="POST" id="editForm"><input type="hidden" name="_action" value="update"><input type="hidden" name="screen_id" id="e_id">
   <div class="modal-body"><div class="form-grid">
     <div class="form-group full"><label class="form-label">Cinema *</label><select class="form-select" name="cinema_id" id="e_cid"><?= $cinema_opts ?></select></div>
     <div class="form-group"><label class="form-label">Screen Name *</label><input class="form-input" name="screen_name" id="e_sname" required/></div>
@@ -108,8 +127,11 @@ document.getElementById('pageContent').innerHTML=`
 </table>
 <div class="table-footer"><div class="table-count"><?= count($rows) ?> records</div></div>
 </div>
-<?= flashMsg($flash,$flash_type) ?>
 `;
+
+ajaxForm(document.getElementById('addForm'),  { closeModal: 'addModal'  });
+ajaxForm(document.getElementById('editForm'), { closeModal: 'editModal' });
+
 function openEdit(r){
   document.getElementById('e_id').value    = r.screen_id;
   document.getElementById('e_cid').value   = r.cinema_id;
@@ -117,11 +139,9 @@ function openEdit(r){
   document.getElementById('e_seats').value = r.total_seats;
   OM('editModal');
 }
-function doDelete(id,name){
-  showDelete('Delete Screen','"'+name+'"',function(){
-    document.getElementById('delId').value=id;
-    document.getElementById('delForm').submit();
-  });
+function doDelete(id, name){
+  document.getElementById('delId').value = id;
+  ajaxDelete(document.getElementById('delForm'), 'Delete Screen', '"'+name+'"');
 }
 </script>
 <?php require_once '../includes/footer.php'; ?>

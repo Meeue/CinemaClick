@@ -30,6 +30,27 @@ function genId(mysqli $conn, string $table, string $pk, string $prefix, int $pad
 
 function e(string $s): string { return htmlspecialchars($s, ENT_QUOTES); }
 
+/**
+ * Send a JSON response for AJAX form submissions.
+ * Call this after processing a POST action when the request is via fetch().
+ */
+function jsonResponse(string $msg, string $type = 'success'): void {
+    header('Content-Type: application/json');
+    echo json_encode(['message' => $msg, 'type' => $type]);
+    exit;
+}
+
+/**
+ * Detect if the current request is an AJAX/fetch call.
+ * Pages set X-Requested-With: fetch in the ajaxForm() helper.
+ */
+function isAjax(): bool {
+    return (
+        (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'fetch') ||
+        (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)
+    );
+}
+
 function flashMsg(string $msg, string $type = 'success'): string {
     if (!$msg) return '';
     $icon = $type === 'success' ? '✓' : '✕';

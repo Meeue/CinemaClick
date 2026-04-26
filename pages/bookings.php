@@ -36,6 +36,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         else { $flash='Error: '.$conn->error; $flash_type='error'; }
     }
     $conn->close();
+
+    if (isAjax()) jsonResponse($flash, $flash_type);
 }
 
 $conn = getSlaveConn();
@@ -66,7 +68,7 @@ require_once '../includes/header.php';
 
 <div class="modal-overlay" id="addModal"><div class="modal">
   <div class="modal-header"><div class="modal-title">Add Booking</div><button class="modal-close" onclick="CM('addModal')">✕</button></div>
-  <form method="POST"><input type="hidden" name="_action" value="insert">
+  <form method="POST" id="addForm"><input type="hidden" name="_action" value="insert">
   <div class="modal-body"><div class="form-grid">
     <div class="form-group full"><label class="form-label">Customer *</label><select class="form-select" name="customer_id" id="a_cust" onchange="fillName(this)"><?= $cust_opts ?></select></div>
     <div class="form-group full"><label class="form-label">Showtime *</label><select class="form-select" name="showtime_id" onchange="fillPrice(this)"><?= $show_opts ?></select></div>
@@ -81,7 +83,7 @@ require_once '../includes/header.php';
 
 <div class="modal-overlay" id="editModal"><div class="modal">
   <div class="modal-header"><div class="modal-title">Edit Booking</div><button class="modal-close" onclick="CM('editModal')">✕</button></div>
-  <form method="POST"><input type="hidden" name="_action" value="update"><input type="hidden" name="booking_id" id="e_id">
+  <form method="POST" id="editForm"><input type="hidden" name="_action" value="update"><input type="hidden" name="booking_id" id="e_id">
   <div class="modal-body"><div class="form-grid">
     <div class="form-group full"><label class="form-label">Customer Name</label><input class="form-input" name="customer_name" id="e_cname"/></div>
     <div class="form-group"><label class="form-label">Total Amount (₱)</label><input class="form-input" name="total_amount" id="e_amt" type="number" step="0.01"/></div>
@@ -132,8 +134,11 @@ document.getElementById('pageContent').innerHTML=`
 </table>
 <div class="table-footer"><div class="table-count"><?= count($rows) ?> records</div></div>
 </div>
-<?= flashMsg($flash,$flash_type) ?>
 `;
+
+ajaxForm(document.getElementById('addForm'),  { closeModal: 'addModal'  });
+ajaxForm(document.getElementById('editForm'), { closeModal: 'editModal' });
+
 function fillPrice(sel){ var p=sel.options[sel.selectedIndex]?.dataset?.price; if(p) document.getElementById('a_amt').value=p; }
 function fillName(sel){ var t=sel.options[sel.selectedIndex]?.text; if(t) document.getElementById('a_cname').value=t; }
 function openEdit(r){
@@ -143,11 +148,9 @@ function openEdit(r){
   document.getElementById('e_stat').value  = r.booking_status;
   OM('editModal');
 }
-function doDelete(id,name){
-  showDelete('Delete Booking','Booking #'+name,function(){
-    document.getElementById('delId').value=id;
-    document.getElementById('delForm').submit();
-  });
+function doDelete(id, name){
+  document.getElementById('delId').value = id;
+  ajaxDelete(document.getElementById('delForm'), 'Delete Booking', 'Booking #'+name);
 }
 </script>
 <?php require_once '../includes/footer.php'; ?>

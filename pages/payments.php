@@ -42,6 +42,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         else { $flash='Error: '.$conn->error; $flash_type='error'; }
     }
     $conn->close();
+
+    if (isAjax()) jsonResponse($flash, $flash_type);
 }
 
 $conn  = getSlaveConn();
@@ -59,7 +61,6 @@ $rows  = $conn->query(
      JOIN movies    m  ON st.movie_id   = m.movie_id
      $where ORDER BY p.payment_date DESC"
 )->fetch_all(MYSQLI_ASSOC);
-
 $bookings = $conn->query(
     "SELECT b.booking_id, CONCAT(b.booking_id,' — ',b.customer_name,' — ₱',b.total_amount) AS label, b.total_amount
      FROM bookings b WHERE b.booking_status!='Cancelled' ORDER BY b.booking_date DESC"
@@ -75,7 +76,7 @@ require_once '../includes/header.php';
 
 <div class="modal-overlay" id="addModal"><div class="modal">
   <div class="modal-header"><div class="modal-title">Add Payment</div><button class="modal-close" onclick="CM('addModal')">✕</button></div>
-  <form method="POST"><input type="hidden" name="_action" value="insert">
+  <form method="POST" id="addForm"><input type="hidden" name="_action" value="insert">
   <div class="modal-body"><div class="form-grid">
     <div class="form-group full"><label class="form-label">Booking *</label><select class="form-select" name="booking_id" onchange="document.getElementById('a_amt').value=this.options[this.selectedIndex].dataset.amt"><?= $bk_opts ?></select></div>
     <div class="form-group"><label class="form-label">Payment Date</label><input class="form-input" name="payment_date" type="date" value="<?= date('Y-m-d') ?>"/></div>
@@ -89,7 +90,7 @@ require_once '../includes/header.php';
 
 <div class="modal-overlay" id="editModal"><div class="modal">
   <div class="modal-header"><div class="modal-title">Edit Payment</div><button class="modal-close" onclick="CM('editModal')">✕</button></div>
-  <form method="POST"><input type="hidden" name="_action" value="update"><input type="hidden" name="payment_id" id="e_id">
+  <form method="POST" id="editForm"><input type="hidden" name="_action" value="update"><input type="hidden" name="payment_id" id="e_id">
   <div class="modal-body"><div class="form-grid">
     <div class="form-group"><label class="form-label">Payment Date</label><input class="form-input" name="payment_date" id="e_date" type="date"/></div>
     <div class="form-group"><label class="form-label">Amount (₱)</label><input class="form-input" name="amount" id="e_amt" type="number" step="0.01"/></div>
@@ -139,8 +140,11 @@ document.getElementById('pageContent').innerHTML=`
 </table>
 <div class="table-footer"><div class="table-count"><?= count($rows) ?> records</div></div>
 </div>
-<?= flashMsg($flash,$flash_type) ?>
 `;
+
+ajaxForm(document.getElementById('addForm'),  { closeModal: 'addModal'  });
+ajaxForm(document.getElementById('editForm'), { closeModal: 'editModal' });
+
 function openEdit(r){
   document.getElementById('e_id').value   = r.payment_id;
   document.getElementById('e_date').value = r.payment_date;
@@ -149,11 +153,9 @@ function openEdit(r){
   document.getElementById('e_stat').value = r.payment_status;
   OM('editModal');
 }
-function doDelete(id,name){
-  showDelete('Delete Payment','Payment #'+name,function(){
-    document.getElementById('delId').value=id;
-    document.getElementById('delForm').submit();
-  });
+function doDelete(id, name){
+  document.getElementById('delId').value = id;
+  ajaxDelete(document.getElementById('delForm'), 'Delete Payment', 'Payment #'+name);
 }
 </script>
 <?php require_once '../includes/footer.php'; ?>

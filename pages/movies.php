@@ -17,7 +17,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $rdate = $conn->real_escape_string($_POST['release_date'] ?? date('Y-m-d'));
         $desc  = $conn->real_escape_string(trim($_POST['description'] ?? ''));
         $poster = '';
-        // Handle poster upload
         if (!empty($_FILES['poster']['name'])) {
             $ext = strtolower(pathinfo($_FILES['poster']['name'], PATHINFO_EXTENSION));
             if (in_array($ext, ['jpg','jpeg','png','gif','webp'])) {
@@ -44,7 +43,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $rat   = $conn->real_escape_string($_POST['rating'] ?? 'G');
         $rdate = $conn->real_escape_string($_POST['release_date'] ?? '');
         $desc  = $conn->real_escape_string(trim($_POST['description'] ?? ''));
-        // Handle poster upload on edit
         $poster_clause = '';
         if (!empty($_FILES['poster']['name'])) {
             $ext = strtolower(pathinfo($_FILES['poster']['name'], PATHINFO_EXTENSION));
@@ -70,14 +68,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else { $flash = 'Error: '.$conn->error; $flash_type = 'error'; }
     }
     $conn->close();
+
+    if (isAjax()) jsonResponse($flash, $flash_type);
 }
 
-$conn    = getSlaveConn();
-$search  = $conn->real_escape_string(trim($_GET['q'] ?? ''));
-$genre_f = $conn->real_escape_string($_GET['genre'] ?? '');
-$cond    = [];
-if ($search)  $cond[] = "(title LIKE '%$search%' OR genre LIKE '%$search%')";
-if ($genre_f) $cond[] = "genre='$genre_f'";
+$conn     = getSlaveConn();
+$search   = $conn->real_escape_string(trim($_GET['q'] ?? ''));
+$genre_f  = $conn->real_escape_string($_GET['genre']  ?? '');
+$rating_f = $conn->real_escape_string($_GET['rating'] ?? '');
+$cond     = [];
+if ($search)   $cond[] = "(title LIKE '%$search%' OR genre LIKE '%$search%')";
+if ($genre_f)  $cond[] = "genre='$genre_f'";
+if ($rating_f) $cond[] = "rating='$rating_f'";
 $where   = $cond ? 'WHERE '.implode(' AND ',$cond) : '';
 $movies  = $conn->query("SELECT * FROM movies $where ORDER BY release_date DESC")->fetch_all(MYSQLI_ASSOC);
 $conn->close();
@@ -87,7 +89,7 @@ $ratings = ['G','PG','PG-13','R','R-18'];
 require_once '../includes/header.php';
 ?>
 
-<!-- DELETE FORM (hidden, submitted by JS) -->
+<!-- DELETE FORM -->
 <form id="deleteForm" method="POST" style="display:none">
   <input type="hidden" name="_action" value="delete">
   <input type="hidden" name="movie_id" id="deleteId">
@@ -97,7 +99,7 @@ require_once '../includes/header.php';
 <div class="modal-overlay" id="addModal">
   <div class="modal">
     <div class="modal-header"><div class="modal-title">Add Movie</div><button class="modal-close" onclick="CM('addModal')">✕</button></div>
-    <form method="POST" enctype="multipart/form-data">
+    <form method="POST" enctype="multipart/form-data" id="addForm">
       <input type="hidden" name="_action" value="insert">
       <div class="modal-body">
         <div class="form-grid">
@@ -123,7 +125,7 @@ require_once '../includes/header.php';
 <div class="modal-overlay" id="editModal">
   <div class="modal">
     <div class="modal-header"><div class="modal-title">Edit Movie</div><button class="modal-close" onclick="CM('editModal')">✕</button></div>
-    <form method="POST" enctype="multipart/form-data">
+    <form method="POST" enctype="multipart/form-data" id="editForm">
       <input type="hidden" name="_action" value="update">
       <input type="hidden" name="movie_id" id="e_id">
       <div class="modal-body">
@@ -163,7 +165,13 @@ document.getElementById('pageContent').innerHTML = `
       <option value="<?= $g ?>" <?= $genre_f===$g?'selected':'' ?>><?= $g ?></option>
       <?php endforeach; ?>
     </select>
-    <?php if ($search || $genre_f): ?><a href="movies.php" style="font-size:12px;color:var(--text-muted);white-space:nowrap">Clear</a><?php endif; ?>
+    <select class="filter-select" name="rating" onchange="this.form.submit()">
+      <option value="">All Ratings</option>
+      <?php foreach($ratings as $r): ?>
+      <option value="<?= $r ?>" <?= $rating_f===$r?'selected':'' ?>><?= $r ?></option>
+      <?php endforeach; ?>
+    </select>
+    <?php if ($search || $genre_f || $rating_f): ?><a href="movies.php" style="font-size:12px;color:var(--text-muted);white-space:nowrap">Clear</a><?php endif; ?>
   </form>
 </div>
 
@@ -206,8 +214,10 @@ document.getElementById('pageContent').innerHTML = `
 </div>
 <?php endif; ?>
 </div>
-<?= flashMsg($flash, $flash_type) ?>
 `;
+
+ajaxForm(document.getElementById('addForm'),  { closeModal: 'addModal'  });
+ajaxForm(document.getElementById('editForm'), { closeModal: 'editModal' });
 
 function openEdit(id,title,genre,dur,rating,rdate,desc){
   document.getElementById('e_id').value    = id;
@@ -222,15 +232,12 @@ function openEdit(id,title,genre,dur,rating,rdate,desc){
 
 function openPosterUpload(id,title,genre,dur,rating,rdate,desc){
   openEdit(id,title,genre,dur,rating,rdate,desc);
-  // scroll to poster input
   setTimeout(function(){ document.querySelector('#editModal input[type=file]').click(); },300);
 }
 
 function doDelete(id, name){
-  showDelete('Delete Movie', '"'+name+'"', function(){
-    document.getElementById('deleteId').value = id;
-    document.getElementById('deleteForm').submit();
-  });
+  document.getElementById('deleteId').value = id;
+  ajaxDelete(document.getElementById('deleteForm'), 'Delete Movie', '"'+name+'"');
 }
 </script>
 <?php require_once '../includes/footer.php'; ?>

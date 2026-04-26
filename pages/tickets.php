@@ -24,6 +24,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         else { $flash='Error: '.$conn->error; $flash_type='error'; }
     }
     $conn->close();
+
+    if (isAjax()) jsonResponse($flash, $flash_type);
 }
 
 $conn     = getSlaveConn();
@@ -53,7 +55,6 @@ $seats_avail = $conn->query(
      WHERE s.status='Available' ORDER BY sc.screen_name, s.seat_number LIMIT 200"
 )->fetch_all(MYSQLI_ASSOC);
 
-// Summary counts
 $total_tickets = count($rows);
 $total_revenue = array_sum(array_column($rows,'ticket_price'));
 $conn->close();
@@ -66,7 +67,7 @@ require_once '../includes/header.php';
 
 <div class="modal-overlay" id="addModal"><div class="modal">
   <div class="modal-header"><div class="modal-title">Issue Ticket</div><button class="modal-close" onclick="CM('addModal')">✕</button></div>
-  <form method="POST"><input type="hidden" name="_action" value="insert">
+  <form method="POST" id="addForm"><input type="hidden" name="_action" value="insert">
   <div class="modal-body"><div class="form-grid">
     <div class="form-group full"><label class="form-label">Booking *</label><select class="form-select" name="booking_id" onchange="document.getElementById('a_price').value=this.options[this.selectedIndex].dataset.price||0"><?= $bk_opts ?></select></div>
     <div class="form-group full"><label class="form-label">Seat *</label><select class="form-select" name="seat_id"><?= $seat_opts ?></select></div>
@@ -114,13 +115,13 @@ document.getElementById('pageContent').innerHTML=`
 </table>
 <div class="table-footer"><div class="table-count"><?= $total_tickets ?> tickets · ₱<?= number_format($total_revenue,2) ?> total</div></div>
 </div>
-<?= flashMsg($flash,$flash_type) ?>
 `;
+
+ajaxForm(document.getElementById('addForm'), { closeModal: 'addModal' });
+
 function doDelete(id){
-  showDelete('Delete Ticket','Ticket #'+id,function(){
-    document.getElementById('delId').value=id;
-    document.getElementById('delForm').submit();
-  });
+  document.getElementById('delId').value = id;
+  ajaxDelete(document.getElementById('delForm'), 'Delete Ticket', 'Ticket #'+id);
 }
 </script>
 <?php require_once '../includes/footer.php'; ?>
