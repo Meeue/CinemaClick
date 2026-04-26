@@ -84,7 +84,7 @@ document.getElementById('pageContent').innerHTML=`
   </form>
 </div>
 <div class="table-wrap"><table>
-  <thead><tr><th>ID</th><th>Cinema Name</th><th>Location</th><th>Contact</th><th>Screens</th><th style="text-align:right">Actions</th></tr></thead>
+  <thead><tr><th>ID</th><th>Cinema Name</th><th>Location</th><th>Contact</th><th>Screens</th><th style="text-align:left">Actions</th></tr></thead>
   <tbody>
   <?php foreach($rows as $r): ?>
   <tr>

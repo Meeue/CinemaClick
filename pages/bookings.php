@@ -110,7 +110,7 @@ document.getElementById('pageContent').innerHTML=`
   </form>
 </div>
 <div class="table-wrap"><table>
-  <thead><tr><th>ID</th><th>Customer</th><th>Movie</th><th>Cinema</th><th>Show Date</th><th>Amount</th><th>Status</th><th>Booked</th><th style="text-align:right">Actions</th></tr></thead>
+  <thead><tr><th>ID</th><th>Customer</th><th>Movie</th><th>Cinema</th><th>Show Date</th><th>Amount</th><th>Status</th><th>Booked</th><th style="text-align:center">Actions</th></tr></thead>
   <tbody>
   <?php foreach($rows as $r): ?>
   <tr>

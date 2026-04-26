@@ -118,7 +118,7 @@ document.getElementById('pageContent').innerHTML=`
   </form>
 </div>
 <div class="table-wrap"><table>
-  <thead><tr><th>ID</th><th>Movie</th><th>Cinema</th><th>Screen</th><th>Date</th><th>Start</th><th>End</th><th>Price</th><th style="text-align:right">Actions</th></tr></thead>
+  <thead><tr><th>ID</th><th>Movie</th><th>Cinema</th><th>Screen</th><th>Date</th><th>Start</th><th>End</th><th>Price</th><th style="text-align:left">Actions</th></tr></thead>
   <tbody>
   <?php foreach($rows as $r): ?>
   <tr>

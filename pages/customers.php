@@ -102,7 +102,7 @@ document.getElementById('pageContent').innerHTML=`
 </div>
 <div class="table-wrap">
 <table>
-  <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Status</th><th>Joined</th><th style="text-align:right">Actions</th></tr></thead>
+  <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Status</th><th>Joined</th><th style="text-align:left">Actions</th></tr></thead>
   <tbody>
   <?php if($rows): foreach($rows as $r): ?>
   <tr>

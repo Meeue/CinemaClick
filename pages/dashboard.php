@@ -88,7 +88,7 @@ document.getElementById('pageContent').innerHTML = `
           <div class="movie-thumb t<?= ($i%3)+1 ?>">
             <?php if ($m['poster_url']): ?>
             <img src="../<?= e($m['poster_url']) ?>" style="width:36px;height:52px;object-fit:cover;border-radius:3px">
-            <?php else: ?>🎬<?php endif; ?>
+            <?php else: ?><?php endif; ?>
           </div>
           <div class="movie-info">
             <div class="movie-title-db"><?= e($m['title']) ?></div>
