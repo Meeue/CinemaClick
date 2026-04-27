@@ -186,13 +186,13 @@ document.getElementById('pageContent').innerHTML = `
     <img src="<?= e($poster) ?>" alt="<?= e($m['title']) ?>"/>
     <?php else: ?>
     <div class="movie-poster-placeholder">
-      <div class="poster-icon"><i class="fa-solid fa-file-import" style="color: #ff4520;"></i></div>
+      <div class="poster-icon"><i class="fa-solid fa-file-import" style="color: #c96a3aff;"></i></div>
       <div class="poster-label">No Poster</div>
     </div>
     <?php endif; ?>
     <div class="movie-poster-badge"><span class="rating-badge <?= $ratingCls ?>"><?= e($m['rating']) ?></span></div>
     <label class="poster-upload-btn" onclick="openPosterUpload('<?= e($m['movie_id']) ?>', '<?= e(addslashes($m['title'])) ?>', '<?= e($m['genre']) ?>', '<?= $m['duration_minutes'] ?>', '<?= e($m['rating']) ?>', '<?= e($m['release_date']) ?>', \`<?= e(addslashes($m['description'])) ?>\`)">
-      <i class="fa-solid fa-arrow-up-from-bracket" style="color: #ff4520;"></i> Change Poster
+      <i class="fa-solid fa-arrow-up-from-bracket" style="color: #c96a3aff;"></i> Change Poster
     </label>
   </div>
   <div class="movie-card-body">
@@ -202,7 +202,7 @@ document.getElementById('pageContent').innerHTML = `
       <span class="genre-tag"><?= e($m['release_date']) ?></span>
       <div class="movie-card-actions">
         <button class="btn btn-ghost btn-sm" onclick="openEdit('<?= e($m['movie_id']) ?>','<?= e(addslashes($m['title'])) ?>','<?= e($m['genre']) ?>','<?= $m['duration_minutes'] ?>','<?= e($m['rating']) ?>','<?= e($m['release_date']) ?>',\`<?= e(addslashes($m['description'] ?? '')) ?>\`)"><i class="fa-solid fa-pen-to-square" style="color: #7A7590;"></i></button>
-        <button class="btn btn-danger btn-sm" onclick="doDelete('<?= e($m['movie_id']) ?>','<?= e(addslashes($m['title'])) ?>')"><i class="fa-solid fa-trash-can" style="color: #ff4520;"></i></button>
+        <button class="btn btn-danger btn-sm" onclick="doDelete('<?= e($m['movie_id']) ?>','<?= e(addslashes($m['title'])) ?>')"><i class="fa-solid fa-trash-can" style="color: #c96a3aff;"></i></button>
       </div>
     </div>
   </div>

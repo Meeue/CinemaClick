@@ -114,7 +114,7 @@ document.getElementById('pageContent').innerHTML=`
     <td class="td-muted"><?= e(substr($r['created_at'],0,10)) ?></td>
     <td style="text-align:right"><div class="actions">
       <button class="btn btn-ghost btn-sm" onclick="openEdit(<?= htmlspecialchars(json_encode($r)) ?>)"><i class="fa-solid fa-pen-to-square" style="color: #7A7590;"></i></button>
-      <button class="btn btn-danger btn-sm" onclick="doDelete('<?= e($r['customer_id']) ?>','<?= e(addslashes($r['first_name'].' '.$r['last_name'])) ?>')"><i class="fa-solid fa-trash-can" style="color: #ff4520;"></i></button>
+      <button class="btn btn-danger btn-sm" onclick="doDelete('<?= e($r['customer_id']) ?>','<?= e(addslashes($r['first_name'].' '.$r['last_name'])) ?>')"><i class="fa-solid fa-trash-can" style="color: #c96a3aff;"></i></button>
     </div></td>
   </tr>
   <?php endforeach; else: ?>

@@ -63,7 +63,7 @@ document.getElementById('pageContent').innerHTML = `
       <div class="profile-avatar-lg" id="avatarCircle" onclick="document.getElementById('avatarFile').click()" title="Click to change photo">
         <span id="avatarInitials"><?= e($initials) ?></span>
         <img id="avatarImg" src="" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:50%;position:absolute;top:0;left:0"/>
-        <div class="profile-avatar-edit">✏️</div>
+        <div class="profile-avatar-edit"><i class="fa-solid fa-pencil" style="color: rgb(207, 185, 105);"></i></div>
       </div>
       <input type="file" id="avatarFile" accept="image/*" style="display:none" onchange="handleAvatar(event)"/>
       <div class="profile-name" id="displayName"><?= e($full_name) ?></div>
@@ -77,15 +77,15 @@ document.getElementById('pageContent').innerHTML = `
       </div>
       <hr class="profile-divider"/>
       <div style="font-size:11px;color:var(--text-muted);text-align:left;line-height:1.8">
-        <div>📧 <?= e($email) ?></div>
-        <div>📱 <?= e($phone ?: 'Not set') ?></div>
-        <div>🗓 Member since 2024</div>
+        <div><i class="fa-solid fa-at" style="color: #c96a3a;"></i> <?= e($email) ?></div>
+        <div><i class="fa-solid fa-mobile" style="color: #c96a3a;"></i> <?= e($phone ?: 'Not set') ?></div>
+        <div><i class="fa-solid fa-calendar" style="color: #c96a3a;"></i> Member since 2024</div>
       </div>
       <hr class="profile-divider"/>
       <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0">
         <span style="font-size:12px;color:var(--text-muted)">Theme</span>
         <button onclick="toggleTheme()" style="background:var(--bg-surface2);border:.5px solid var(--border-md);border-radius:20px;padding:4px 14px;font-size:12px;color:var(--text-muted);cursor:pointer" id="themeBtn">
-          🌙 Dark
+          <i class="fa-solid fa-moon" style="color: #c96a3a;"></i> Dark
         </button>
       </div>
     </div>
@@ -97,7 +97,7 @@ document.getElementById('pageContent').innerHTML = `
     <!-- Personal Info -->
     <div class="profile-form-section">
       <div class="profile-section-title">
-        <div class="profile-section-icon">👤</div>
+        <div class="profile-section-icon"><i class="fa-solid fa-user" style="color: #c96a3a;"></i></div>
         Personal Information
       </div>
       <form method="POST" id="profileForm">
@@ -118,7 +118,7 @@ document.getElementById('pageContent').innerHTML = `
     <!-- Change Password -->
     <div class="profile-form-section">
       <div class="profile-section-title">
-        <div class="profile-section-icon">🔒</div>
+        <div class="profile-section-icon"><i class="fa-solid fa-lock" style="color: #c96a3a;"></i></div>
         Change Password
       </div>
       <form method="POST" id="passwordForm">
@@ -137,7 +137,7 @@ document.getElementById('pageContent').innerHTML = `
     <!-- System Info -->
     <div class="profile-form-section">
       <div class="profile-section-title">
-        <div class="profile-section-icon">🗄️</div>
+        <div class="profile-section-icon"><i class="fa-solid fa-database" style="color: #c96a3a;"></i></div>
         Database Connection Status
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">

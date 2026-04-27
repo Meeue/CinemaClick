@@ -54,7 +54,7 @@ function buildTopbar(title, sub, actionLabel){
   var theme = document.documentElement.getAttribute('data-theme') || 'dark';
   var toggleIcon = theme === 'dark'
   ? '<i class="fa-solid fa-sun" style="color: rgb(255, 212, 59);"></i>'
-  : '<i class="fa-solid fa-moon" style="color: #C8370A;"></i>';
+  : '<i class="fa-solid fa-moon" style="color: #c96a3aff;"></i>';
   var toggleTitle = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
   var btn = actionLabel
     ? '<button class="btn btn-primary" id="topbarAction">'+actionLabel+'</button>'
@@ -119,7 +119,7 @@ function toggleTheme(){
   if(btn){
     btn.innerHTML = next === 'dark'
   ? '<i class="fa-solid fa-sun" style="color: rgb(255, 212, 59);"></i>'
-  : '<i class="fa-solid fa-moon" style="color: #C8370A;"></i>';
+  : '<i class="fa-solid fa-moon" style="color: #c96a3aff;"></i>';
     btn.title        = next === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
   }
 }
@@ -139,7 +139,7 @@ function showDelete(title, name, onConfirm){
         '<button class="modal-close" onclick="this.closest(\'.modal-overlay\').remove()">✕</button>'+
       '</div>'+
       '<div class="modal-body" style="padding:28px 22px;text-align:center">'+
-        '<div class="confirm-icon"><i class="fa-solid fa-trash-can" style="color: #ff4520;"></i></div>'+
+        '<div class="confirm-icon"><i class="fa-solid fa-trash-can" style="color: #c96a3aff;"></i></div>'+
         '<div class="confirm-msg">Are you sure you want to delete <span class="confirm-name">'+name+'</span>?<br>This action cannot be undone.</div>'+
       '</div>'+
       '<div class="modal-footer">'+

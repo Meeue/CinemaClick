@@ -105,7 +105,7 @@ document.getElementById('pageContent').innerHTML=`
     <td style="color:var(--text);font-weight:500">₱<?= number_format($r['ticket_price'],2) ?></td>
     <td class="td-muted"><?= e($r['issued_at'] ?? '—') ?></td>
     <td style="text-align:right">
-      <button class="btn btn-danger btn-sm" onclick="doDelete('<?= e($r['ticket_id']) ?>')"><i class="fa-solid fa-trash-can" style="color: #ff4520;"></i></button>
+      <button class="btn btn-danger btn-sm" onclick="doDelete('<?= e($r['ticket_id']) ?>')"><i class="fa-solid fa-trash-can" style="color: #c96a3aff;"></i></button>
     </td>
   </tr>
   <?php endforeach; if(!$rows): ?>
