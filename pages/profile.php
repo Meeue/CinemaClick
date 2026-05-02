@@ -4,6 +4,13 @@ require_once '../connect.php';
 require_once '../includes/helpers.php';
 $flash = $flash_type = '';
 
+// Logout
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header('Location: ../login.php');
+    exit;
+}
+
 // Pull live stats from slave
 $conn = getSlaveConn();
 $stat_cinemas  = $conn->query("SELECT COUNT(*) AS c FROM cinemas")->fetch_assoc()['c'];
@@ -12,12 +19,15 @@ $stat_movies   = $conn->query("SELECT COUNT(*) AS c FROM movies")->fetch_assoc()
 $stat_screens  = $conn->query("SELECT COUNT(*) AS c FROM screens")->fetch_assoc()['c'];
 $conn->close();
 
+// Update personal info — saves to DB and session
 if ($_SERVER["REQUEST_METHOD"] === "POST" && ($_POST["_action"] ?? "") === "update_profile") {
     $conn  = getMasterConn();
+    $id    = $conn->real_escape_string($_SESSION['admin_id'] ?? '');
     $fname = $conn->real_escape_string(trim($_POST['first_name'] ?? ''));
     $lname = $conn->real_escape_string(trim($_POST['last_name']  ?? ''));
     $email = $conn->real_escape_string(trim($_POST['email']      ?? ''));
     $phone = $conn->real_escape_string(trim($_POST['phone']      ?? ''));
+    $conn->query("UPDATE admins SET first_name='$fname',last_name='$lname',email='$email',phone_number='$phone',name='$fname $lname' WHERE admin_id='$id'");
     $_SESSION['admin_fname'] = $fname;
     $_SESSION['admin_lname'] = $lname;
     $_SESSION['admin_email'] = $email;
@@ -27,27 +37,35 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && ($_POST["_action"] ?? "") === "upda
     if (isAjax()) jsonResponse($flash, $flash_type);
 }
 
+// Change password — verifies current, updates DB
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['_action'] ?? '') === 'change_password') {
     $conn    = getMasterConn();
-    $new     = $_POST['new_password']     ?? '';
-    $confirm = $_POST['confirm_password'] ?? '';
-    if ($new !== $confirm) {
+    $id      = $conn->real_escape_string($_SESSION['admin_id'] ?? '');
+    $current = $_POST['current_password']  ?? '';
+    $new     = $_POST['new_password']      ?? '';
+    $confirm = $_POST['confirm_password']  ?? '';
+    $row     = $conn->query("SELECT password FROM admins WHERE admin_id='$id' LIMIT 1")->fetch_assoc();
+    if (!$row || !password_verify($current, $row['password'])) {
+        $flash = 'Current password is incorrect.'; $flash_type = 'error';
+    } elseif ($new !== $confirm) {
         $flash = 'New passwords do not match.'; $flash_type = 'error';
     } elseif (strlen($new) < 6) {
         $flash = 'Password must be at least 6 characters.'; $flash_type = 'error';
     } else {
+        $hash = $conn->real_escape_string(password_hash($new, PASSWORD_BCRYPT));
+        $conn->query("UPDATE admins SET password='$hash' WHERE admin_id='$id'");
         $flash = 'Password changed successfully.'; $flash_type = 'success';
     }
     $conn->close();
     if (isAjax()) jsonResponse($flash, $flash_type);
 }
 
-$fname = $_SESSION['admin_fname'] ?? 'Juan';
-$lname = $_SESSION['admin_lname'] ?? 'Dela Cruz';
-$email = $_SESSION['admin_email'] ?? 'admin@cinema.ph';
-$phone = $_SESSION['admin_phone'] ?? '';
+$fname    = $_SESSION['admin_fname'] ?? 'Admin';
+$lname    = $_SESSION['admin_lname'] ?? '';
+$email    = $_SESSION['admin_email'] ?? '';
+$phone    = $_SESSION['admin_phone'] ?? '';
 $initials = strtoupper(substr($fname,0,1) . substr($lname,0,1));
-$full_name = "$fname $lname";
+$full_name = trim("$fname $lname");
 
 require_once '../includes/header.php';
 ?>
@@ -88,6 +106,10 @@ document.getElementById('pageContent').innerHTML = `
           <i class="fa-solid fa-moon" style="color: #c96a3a;"></i> Dark
         </button>
       </div>
+      <hr class="profile-divider"/>
+      <a href="javascript:void(0)" onclick="confirmLogout()" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:9px;background:var(--danger-dim);color:var(--danger);border:.5px solid var(--danger-dim);border-radius:8px;font-size:13px;font-weight:500;text-decoration:none;transition:all .15s" onmouseover="this.style.filter='brightness(1.2)'" onmouseout="this.style.filter='brightness(1)'">
+        <i class="fa-solid fa-right-from-bracket"></i> Log Out
+      </a>
     </div>
   </div>
 
@@ -193,7 +215,29 @@ function handleAvatar(e){
   reader.readAsDataURL(file);
 }
 
-// Sync theme button label
+// Logout confirm modal
+function confirmLogout(){
+  var overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML =
+    '<div class="modal modal-sm">'+
+      '<div class="modal-header">'+
+        '<div class="modal-title">Log Out</div>'+
+        '<button class="modal-close" onclick="this.closest(\'.modal-overlay\').remove()">✕</button>'+
+      '</div>'+
+      '<div class="modal-body" style="padding:28px 22px;text-align:center">'+
+        '<div class="confirm-icon"><i class="fa-solid fa-right-from-bracket" style="color:var(--danger);font-size:32px"></i></div>'+
+        '<div class="confirm-msg">Are you sure you want to log out?<br>You will be redirected to the login page.</div>'+
+      '</div>'+
+      '<div class="modal-footer">'+
+        '<button class="btn btn-ghost" onclick="this.closest(\'.modal-overlay\').remove()">Cancel</button>'+
+        '<button class="btn btn-danger" onclick="window.location.href=\'profile.php?logout=1\'">Log Out</button>'+
+      '</div>'+
+    '</div>';
+  document.body.appendChild(overlay);
+  requestAnimationFrame(function(){ overlay.classList.add('open'); });
+  overlay.addEventListener('click', function(e){ if(e.target===overlay) overlay.remove(); });
+}
 (function(){
   var t = localStorage.getItem('cinema-theme') || 'dark';
   var btn = document.getElementById('themeBtn');

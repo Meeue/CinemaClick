@@ -1,4 +1,3 @@
-
 (function(){
   var saved = localStorage.getItem('cinema-theme') || 'dark';
   document.documentElement.setAttribute('data-theme', saved);
@@ -29,17 +28,19 @@ function buildSidebar(activeKey){
     '<div class="sidebar">',
     '  <div class="sidebar-logo">',
     '    <div class="logo-mark">',
-    '      <img src="../assets/js/click.png" alt="CinemaClick logo" style="width:30px;height:30px;object-fit:contain;border-radius:6px;">',
-    '      <div class="logo-text">CinemaClick</div>',
-    '      <div class="logo-sub">Admin Portal</div>',
+    '      <img src="../assets/logo.png" class="logo-icon" alt="CinemaClick Logo" style="width:30px;height:30px;object-fit:contain;border-radius:6px;">',
+    '      <div>',
+    '        <div class="logo-text">CinemaClick</div>',
+    '        <div class="logo-sub">Admin Portal</div>',
+    '      </div>',
     '    </div>',
     '  </div>',
     '  <div class="nav">'+nav+'</div>',
     '  <div style="padding:14px 16px;border-top:1px solid var(--border);">',
     '    <a href="profile.php" style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;text-decoration:none;transition:background .15s;" onmouseover="this.style.background=\'var(--accent-dim)\'" onmouseout="this.style.background=\'transparent\'">',
-    '      <div style="width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;" id="sidebarAvatar">JD</div>',
+    '      <div style="width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;" id="sidebarAvatar">'+(window.ADMIN_INITIALS||'AD')+'</div>',
     '      <div style="min-width:0;">',
-    '        <div style="font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="sidebarName">Juan Dela Cruz</div>',
+    '        <div style="font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="sidebarName">'+(window.ADMIN_NAME||'Administrator')+'</div>',
     '        <div style="font-size:10px;color:var(--text-muted);">Administrator</div>',
     '      </div>',
     '    </a>',
@@ -65,7 +66,7 @@ function buildTopbar(title, sub, actionLabel){
     '  </div>',
     '  <div class="topbar-right">',
     '    '+btn,
-'    <button class="theme-toggle" id="themeToggle" title="'+toggleTitle+'">'+toggleIcon+'</button>',    '    <a href="profile.php" class="avatar" title="My Profile" id="topbarAvatar">JD</a>',
+'    <button class="theme-toggle" id="themeToggle" title="'+toggleTitle+'">'+toggleIcon+'</button>',    '    <a href="profile.php" class="avatar" title="My Profile" id="topbarAvatar">'+(window.ADMIN_INITIALS||'AD')+'</a>',
     '  </div>',
     '</div>',
   ].join('');
@@ -92,20 +93,6 @@ window.injectLayout = function(cfg){
     SHARED_MODALS;
 
   document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-
-  // Sync sidebar name/avatar from localStorage if profile was set
-  var pName = localStorage.getItem('cinema-profile-name');
-  var pInitials = localStorage.getItem('cinema-profile-initials');
-  if(pName){
-    var sn = document.getElementById('sidebarName');
-    if(sn) sn.textContent = pName;
-  }
-  if(pInitials){
-    var sa = document.getElementById('sidebarAvatar');
-    var ta = document.getElementById('topbarAvatar');
-    if(sa) sa.textContent = pInitials;
-    if(ta) ta.textContent = pInitials;
-  }
 };
 
 function toggleTheme(){
