@@ -6,13 +6,7 @@ $flash = $flash_type = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $act  = $_POST['_action'] ?? '';
     $conn = getMasterConn();
-    if ($act === 'update_status') {
-        $id   = $conn->real_escape_string($_POST['seat_id'] ?? '');
-        $stat = $conn->real_escape_string($_POST['status']  ?? 'Available');
-        if ($conn->query("UPDATE seats SET status='$stat' WHERE seat_id='$id'"))
-            { $flash="Seat updated."; $flash_type='success'; }
-        else { $flash='Error: '.$conn->error; $flash_type='error'; }
-    }
+    // Edit status removed
     $conn->close();
 
     if (isAjax()) jsonResponse($flash, $flash_type);
@@ -58,25 +52,6 @@ $seat_rows = array_chunk($all_seats, 10); // layout always uses unfiltered
 require_once '../includes/header.php';
 ?>
 
-<!-- Edit Seat Modal -->
-<div class="modal-overlay" id="seatModal">
-  <div class="modal" style="max-width:360px">
-    <div class="modal-header"><div class="modal-title">Edit Seat</div><button class="modal-close" onclick="CM('seatModal')">✕</button></div>
-    <form method="POST" id="seatForm"><input type="hidden" name="_action" value="update_status"><input type="hidden" name="seat_id" id="s_id">
-    <div class="modal-body"><div class="form-grid">
-      <div class="form-group"><label class="form-label">Seat ID</label><input class="form-input" id="s_sid" disabled style="opacity:.4"/></div>
-      <div class="form-group"><label class="form-label">Seat Number</label><input class="form-input" id="s_num" disabled style="opacity:.4"/></div>
-      <div class="form-group full"><label class="form-label">Status *</label>
-        <select class="form-select" name="status" id="s_stat">
-          <option>Available</option><option>Taken</option><option>Maintenance</option>
-        </select>
-      </div>
-    </div></div>
-    <div class="modal-footer"><button type="button" class="btn btn-ghost" onclick="CM('seatModal')">Cancel</button><button class="btn btn-primary">Save Seat</button></div>
-    </form>
-  </div>
-</div>
-
 <script>
 injectLayout({page:'seats',title:'Seats',sub:'Seat layout & availability'});
 document.getElementById('pageContent').innerHTML=`
@@ -120,8 +95,7 @@ document.getElementById('pageContent').innerHTML=`
           $title = e($s['seat_number']).' — '.$s['status'];
         ?>
         <?php if ($i === 5): ?><div class="vis-gap"></div><?php endif; ?>
-        <div class="vs <?= $cls ?>" title="<?= $title ?>" style="cursor:pointer"
-          onclick="openSeatEdit('<?= e($s['seat_id']) ?>','<?= e($s['seat_number']) ?>','<?= e($s['status']) ?>')"></div>
+        <div class="vs <?= $cls ?>" title="<?= $title ?>"></div>
         <?php endforeach; ?>
       </div>
       <?php endforeach; ?>
@@ -177,7 +151,7 @@ document.getElementById('pageContent').innerHTML=`
     <td><?= e($s['seat_type']) ?></td>
     <td><?= pill($s['status']) ?></td>
     <td style="text-align:right">
-      <button class="btn btn-ghost btn-sm" onclick="openSeatEdit('<?= e($s['seat_id']) ?>','<?= e($s['seat_number']) ?>','<?= e($s['status']) ?>')">Edit Status</button>
+      <!-- Edit status removed -->
     </td>
   </tr>
   <?php endforeach; ?>
@@ -188,15 +162,6 @@ document.getElementById('pageContent').innerHTML=`
 <?php endif; ?>
 `;
 
-// Wire AJAX on the seat edit form
-ajaxForm(document.getElementById('seatForm'), { closeModal: 'seatModal' });
-
-function openSeatEdit(id, num, status){
-  document.getElementById('s_id').value   = id;
-  document.getElementById('s_sid').value  = id;
-  document.getElementById('s_num').value  = num;
-  document.getElementById('s_stat').value = status;
-  OM('seatModal');
-}
+// Edit status functionality removed
 </script>
 <?php require_once '../includes/footer.php'; ?>

@@ -32,5 +32,6 @@ $base     = $in_pages ? '../' : './';
 // Session data from PHP — used by layout.js for sidebar name/initials
 window.ADMIN_NAME     = <?= json_encode(trim(($_SESSION['admin_fname'] ?? '') . ' ' . ($_SESSION['admin_lname'] ?? '')) ?: 'Administrator') ?>;
 window.ADMIN_INITIALS = <?= json_encode(strtoupper(substr($_SESSION['admin_fname'] ?? 'A', 0, 1) . substr($_SESSION['admin_lname'] ?? 'D', 0, 1))) ?>;
+window.BASE_PATH      = <?= json_encode($base) ?>;
 </script>
 <script src="<?= $base ?>assets/js/layout.js"></script>
