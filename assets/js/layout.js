@@ -4,7 +4,7 @@
 })();
 
 var PAGES = [
-    {key:'dashboard',  href:'dashboard.php',  icon:'<i class="fa-solid fa-table-list" style="color: #C96A3A;"></i>',  label:'Dashboard',  section:'Main'},
+  {key:'dashboard',  href:'dashboard.php',  icon:'<i class="fa-solid fa-table-list" style="color: #C96A3A;"></i>',  label:'Dashboard',  section:'Main'},
   {key:'movies',     href:'movies.php',     icon:'<i class="fa-solid fa-clapperboard" style="color: #C96A3A;"></i>', label:'Movies'},
   {key:'showtimes',  href:'showtimes.php',  icon:'<i class="fa-solid fa-calendar-days" style="color: #C96A3A;"></i>', label:'Showtimes'},
   {key:'bookings',   href:'bookings.php',   icon:'<i class="fa-solid fa-film" style="color: #C96A3A;"></i>', label:'Bookings'},
@@ -28,7 +28,7 @@ function buildSidebar(activeKey){
     '<div class="sidebar">',
     '  <div class="sidebar-logo">',
     '    <div class="logo-mark">',
-    '      <img src="../assets/js/click.png" class="logo-icon" alt="CinemaClick Logo" style="width:40px;height:40px;">',
+    '      <img src="../assets/js/click.png" class="logo-icon" alt="CinemaClick Logo;">',
     '      <div>',
     '        <div class="logo-text">CinemaClick</div>',
     '        <div class="logo-sub">Admin Portal</div>',
