@@ -126,14 +126,14 @@ document.getElementById('pageContent').innerHTML=`
     <input type="hidden" name="sort" id="sortVal" value="<?= htmlspecialchars($sort) ?>"/>
     <div style="position:relative" id="sortWrap">
       <button type="button" onclick="toggleSort()" style="display:flex;align-items:center;gap:6px;padding:7px 13px;border-radius:8px;border:.5px solid var(--border-md);background:var(--bg-surface);color:var(--text);font-size:13px;cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;transition:all .15s" onmouseover="this.style.background='var(--bg-surface2)'" onmouseout="this.style.background='var(--bg-surface)'">
-        <i class="fa-solid fa-arrow-up-arrow-down" style="color:var(--accent);font-size:11px"></i>
+        <i class="fa-solid fa-arrow-up-arrow-down" style="color:var(--text-muted);font-size:11px"></i>
         <?= htmlspecialchars($sort_labels[$sort] ?? 'Newest first') ?>
         <i class="fa-solid fa-chevron-down" style="font-size:9px;color:var(--text-muted)"></i>
       </button>
       <div id="sortDrop" style="display:none;position:absolute;top:calc(100% + 6px);right:0;background:var(--bg-surface);border:.5px solid var(--border-md);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.3);z-index:999;min-width:155px;overflow:hidden;padding:4px 0">
         <?php foreach($sort_labels as $k=>$label): ?>
-        <div onclick="setSort('<?= $k ?>')" style="padding:9px 16px;font-size:13px;cursor:pointer;color:<?= $sort===$k?'var(--accent)':'var(--text)' ?>;font-weight:<?= $sort===$k?'600':'400' ?>" onmouseover="this.style.background='var(--accent-dim)'" onmouseout="this.style.background='transparent'">
-          <?php if($sort===$k): ?><i class="fa-solid fa-check" style="font-size:10px;margin-right:6px;color:var(--accent)"></i><?php else: ?><span style="display:inline-block;width:16px"></span><?php endif; ?>
+        <div onclick="setSort('<?= $k ?>')" style="padding:9px 16px;font-size:13px;cursor:pointer;color:var(--text);font-weight:<?= $sort===$k?'600':'400' ?>" onmouseover="this.style.background='var(--accent-dim)'" onmouseout="this.style.background='transparent'">
+          <?php if($sort===$k): ?><i class="fa-solid fa-check" style="font-size:10px;margin-right:6px;color:var(--text-muted)"></i><?php else: ?><span style="display:inline-block;width:16px"></span><?php endif; ?>
           <?= $label ?>
         </div>
         <?php endforeach; ?>
