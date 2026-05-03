@@ -241,7 +241,7 @@ function confirmLogout(){
 (function(){
   var t = localStorage.getItem('cinema-theme') || 'dark';
   var btn = document.getElementById('themeBtn');
-  if(btn) btn.textContent = t === 'dark' ? '☀️ Light' : '🌙 Dark';
+  if(btn) btn.textContent = t === 'dark' ? ' Light' : ' Dark';
 })();
 
 var _origToggle = window.toggleTheme;
@@ -249,7 +249,7 @@ window.toggleTheme = function(){
   _origToggle();
   var t = localStorage.getItem('cinema-theme') || 'dark';
   var btn = document.getElementById('themeBtn');
-  if(btn) btn.textContent = t === 'dark' ? '☀️ Light' : '🌙 Dark';
+  if(btn) btn.textContent = t === 'dark' ? ' Light' : ' Dark';
 };
 </script>
 <?php require_once '../includes/footer.php'; ?>
