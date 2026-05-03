@@ -28,7 +28,7 @@ function buildSidebar(activeKey){
     '<div class="sidebar">',
     '  <div class="sidebar-logo">',
     '    <div class="logo-mark">',
-    '      <img src="../assets/logo.png" class="logo-icon" alt="CinemaClick Logo" style="width:30px;height:30px;object-fit:contain;border-radius:6px;">',
+    '      <img src="../assets/click.png" class="logo-icon" alt="CinemaClick Logo" style="width:30px;height:30px;object-fit:contain;border-radius:6px;">',
     '      <div>',
     '        <div class="logo-text">CinemaClick</div>',
     '        <div class="logo-sub">Admin Portal</div>',
