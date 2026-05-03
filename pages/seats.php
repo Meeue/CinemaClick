@@ -6,7 +6,6 @@ $flash = $flash_type = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $act  = $_POST['_action'] ?? '';
     $conn = getMasterConn();
-    // Edit status removed
     $conn->close();
 
     if (isAjax()) jsonResponse($flash, $flash_type);
@@ -142,7 +141,7 @@ document.getElementById('pageContent').innerHTML=`
 
 <?php if ($seats): ?>
 <div class="table-wrap"><table>
-  <thead><tr><th>Seat ID</th><th>Seat Number</th><th>Type</th><th>Status</th><th style="text-align:right">Actions</th></tr></thead>
+  <thead><tr><th>Seat ID</th><th>Seat Number</th><th>Type</th><th>Status</th></tr></thead>
   <tbody>
   <?php foreach($seats as $s): ?>
   <tr>
@@ -150,9 +149,6 @@ document.getElementById('pageContent').innerHTML=`
     <td class="td-bold"><?= e($s['seat_number']) ?></td>
     <td><?= e($s['seat_type']) ?></td>
     <td><?= pill($s['status']) ?></td>
-    <td style="text-align:right">
-      <!-- Edit status removed -->
-    </td>
   </tr>
   <?php endforeach; ?>
   </tbody>
@@ -161,7 +157,5 @@ document.getElementById('pageContent').innerHTML=`
 </div>
 <?php endif; ?>
 `;
-
-// Edit status functionality removed
 </script>
 <?php require_once '../includes/footer.php'; ?>
