@@ -204,6 +204,8 @@ body{
 .film-hole{width:20px;height:14px;border-radius:3px;background:rgba(255,255,255,.6);flex-shrink:0;}
 
 .orb{position:absolute;border-radius:50%;filter:blur(60px);pointer-events:none;}
+.orb1{width:280px;height:280px;background:rgba(201,106,58,.25);top:-60px;right:-40px;}
+.orb2{width:200px;height:200px;background:rgba(201,106,58,.12);bottom:-40px;left:20px;}
 
 .illustration{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:24px;padding:40px 32px;}
 
