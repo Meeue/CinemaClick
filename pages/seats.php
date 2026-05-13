@@ -47,7 +47,7 @@ foreach ($screens as $sc) {
 }
 $conn->close();
 
-$seat_rows = array_chunk($all_seats, 10); // layout always uses unfiltered
+$seat_rows = array_chunk($all_seats, 10); 
 require_once '../includes/header.php';
 ?>
 

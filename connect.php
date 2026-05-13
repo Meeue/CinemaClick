@@ -1,8 +1,8 @@
 <?php
 // ============================================================
 //  connect.php — Master-Slave Database Connection
-//  Master (port 3306) → handles INSERT / UPDATE / DELETE
-//  Slave  (port 3308) → handles SELECT (read-only replica)
+//  Master (port 3306) for INSERT / UPDATE / DELETE
+//  Slave  (port 3308) for SELECT (read-only)
 // ============================================================
 
 define('DB_HOST',     '127.0.0.1');
@@ -12,9 +12,6 @@ define('DB_NAME',     'cinemaclick');
 define('MASTER_PORT', 3306);
 define('SLAVE_PORT',  3308);
 
-/**
- * Returns a connection to the MASTER server (writes).
- */
 function getMasterConn(): mysqli {
     $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME, MASTER_PORT);
     if ($conn->connect_error) {
@@ -27,10 +24,6 @@ function getMasterConn(): mysqli {
     return $conn;
 }
 
-/**
- * Returns a connection to the SLAVE server (reads).
- * Automatically falls back to MASTER if slave is unreachable.
- */
 function getSlaveConn(): mysqli {
     $conn = @new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME, SLAVE_PORT);
     if ($conn->connect_error) {

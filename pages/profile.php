@@ -187,7 +187,7 @@ document.getElementById('pageContent').innerHTML = `
 </div>
 `;
 
-// Wire AJAX — profile doesn't need page reload on success (just update display)
+
 ajaxForm(document.getElementById('profileForm'), {
   onSuccess: function(data){
     // Update display name from form values
@@ -197,7 +197,7 @@ ajaxForm(document.getElementById('profileForm'), {
     if(el) el.textContent = fn + ' ' + ln;
   }
 });
-// Password form — no reload needed either; just show result
+
 ajaxForm(document.getElementById('passwordForm'));
 
 // Avatar upload preview

@@ -10,11 +10,6 @@ body {
   font-family: 'DM Sans', sans-serif;
 }
 
-/* ============================================================
-   THEME VARIABLES
-   ============================================================ */
-
-/* Default: dark mode */
 :root,
 [data-theme="dark"] {
   --bg: #0C0C14;
@@ -64,9 +59,6 @@ body {
   --scrollbar-thumb: rgba(28, 28, 40, .15);
 }
 
-/* ============================================================
-   GLOBAL SCROLLBAR
-   ============================================================ */
 ::-webkit-scrollbar {
   width: 4px;
 }
@@ -80,9 +72,6 @@ body {
   border-radius: 2px;
 }
 
-/* ============================================================
-   APP SHELL
-   ============================================================ */
 .app {
   display: flex;
   height: 100vh;
@@ -232,9 +221,7 @@ body {
   gap: 12px;
 }
 
-/* ============================================================
-   THEME TOGGLE BUTTON
-   ============================================================ */
+
 .theme-toggle {
   width: 34px;
   height: 34px;
@@ -326,9 +313,6 @@ body {
   padding: 24px;
 }
 
-/* ============================================================
-   DASHBOARD
-   ============================================================ */
 .stats-row {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -657,9 +641,7 @@ body {
   border-radius: 2px 2px 0 0;
 }
 
-/* ============================================================
-   SHARED TABLE
-   ============================================================ */
+
 .toolbar {
   display: flex;
   align-items: center;
@@ -913,9 +895,6 @@ tbody td {
   border-color: var(--accent);
 }
 
-/* ============================================================
-   BADGES & PILLS
-   ============================================================ */
 .rating-badge {
   font-size: 10px;
   padding: 2px 8px;
@@ -982,9 +961,7 @@ tbody td {
   color: var(--text-muted);
 }
 
-/* ============================================================
-   MODAL
-   ============================================================ */
+
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -1187,9 +1164,7 @@ tbody td {
   font-size: 13px;
 }
 
-/* ============================================================
-   SEATS PAGE VISUAL
-   ============================================================ */
+
 .seats-top {
   display: grid;
   grid-template-columns: 260px 1fr;
@@ -1330,9 +1305,7 @@ tbody td {
   margin-top: 14px;
 }
 
-/* ============================================================
-   MOVIES CARD LAYOUT
-   ============================================================ */
+
 .movies-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -1461,9 +1434,7 @@ tbody td {
   opacity: 1;
 }
 
-/* ============================================================
-   PROFILE PAGE
-   ============================================================ */
+
 .profile-layout {
   display: grid;
   grid-template-columns: 280px 1fr;
@@ -1622,9 +1593,7 @@ tbody td {
   transform: translateY(0);
 }
 
-/* ============================================================
-   ADDITIONAL STYLES (tickets info banner, log ops, profile fixes)
-   ============================================================ */
+
 
 .info-banner {
   display: flex;
@@ -1719,10 +1688,10 @@ tbody td {
   border-radius: 3px 3px 0 0;
 }
 
-/* Stats row 3-col variant */
+
 .stats-row-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;}
 
-/* Movies grid view toggle */
+
 .view-toggle{display:flex;gap:4px;background:var(--bg-surface2);padding:3px;border-radius:7px;}
 .vt-btn{padding:5px 10px;border-radius:5px;border:none;background:transparent;color:var(--text-muted);font-size:12px;cursor:pointer;transition:all .15s;}
 .vt-btn.active{background:var(--bg-surface);color:var(--text);}

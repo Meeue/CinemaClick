@@ -284,7 +284,7 @@ body{
           </button>
         </div>
         <button type="submit" class="btn-login">
-          <i class="fa-solid fa-right-to-bracket" style="margin-right:8px"></i>Sign In
+          <i class="fa-solid fa-arrow-right-to-bracket"></i>  Sign In
         </button>
       </form>
     </div>
@@ -294,7 +294,7 @@ body{
     </div>
   </div>
 
-  <!-- RIGHT: Illustration -->
+  <!-- RIGHT - Illustration -->
   <div class="right">
     <div class="orb orb1"></div>
     <div class="orb orb2"></div>

@@ -252,16 +252,6 @@ function makeTable(data, colCount, rowFn, bodyId, countId, pagId, perPage, pgObj
   });
 }
 
-/* ══════════════════════════════════════════════════════════════
-   AJAX FORM HELPERS — No-reload save / update / delete
-   ══════════════════════════════════════════════════════════════ */
-
-/**
- * showResultModal(message, type)
- * Shows a centered popup after a CRUD action completes.
- * type: 'success' | 'error'
- * On close → reloads the page so the table refreshes.
- */
 function showResultModal(message, type) {
   type = type || 'success';
   var isSuccess = type === 'success';
@@ -304,16 +294,6 @@ function showResultModal(message, type) {
   overlay.addEventListener('click', function(e){ if (e.target === overlay) closeAndRefresh(); });
 }
 
-/**
- * ajaxForm(formEl, options)
- * Intercepts a form's submit event, sends via fetch(), then shows
- * showResultModal() with the server response.
- *
- * options.closeModal  — modal id to close before sending (optional)
- * options.onSuccess   — extra callback on success (optional)
- *
- * Server must respond with JSON: { message: "...", type: "success"|"error" }
- */
 function ajaxForm(formEl, options) {
   options = options || {};
   formEl.addEventListener('submit', function(e) {
@@ -344,11 +324,6 @@ function ajaxForm(formEl, options) {
   });
 }
 
-/**
- * ajaxDelete(formEl, message, name)
- * Shows the existing showDelete confirm, then on confirm submits via fetch
- * and shows showResultModal.
- */
 function ajaxDelete(formEl, title, name) {
   showDelete(title, name, function() {
     var fd = new FormData(formEl);
